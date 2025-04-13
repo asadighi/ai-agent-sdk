@@ -1,14 +1,9 @@
 import { FirestoreClient, AgentRole } from '@ai-agent/sdk';
 import { v4 as uuidv4 } from 'uuid';
-import { resolve, dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { config } from 'dotenv';
+import { ensureEnvLoaded } from './nodeInit.js';
 
-// Load environment variables from the root directory
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const envPath = resolve(__dirname, '../../../.env');
-config({ path: envPath });
+// Ensure environment variables are loaded
+ensureEnvLoaded();
 
 const agentId = uuidv4();
 

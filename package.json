@@ -10,7 +10,9 @@
     "build": "npm run build --workspaces",
     "clean": "npm run clean --workspaces",
     "dev": "npm run dev --workspaces",
-    "start": "npm run start --workspaces"
+    "start": "npm run start --workspaces",
+    "start:cli": "npm run start --workspace=@ai-agent/cli --",
+    "start:web": "npm run dev --workspace=@ai-agent/web"
   },
   "dependencies": {
     "typescript": "^5.3.3"

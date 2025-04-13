@@ -3,6 +3,9 @@ import { collection, doc, setDoc, addDoc, onSnapshot, serverTimestamp, Firestore
 import { AgentRole, MemoryScope } from './types.js';
 import { validateRole, validateAgentConfig, validateMemoryScope, ValidationError } from './validation.js';
 
+// Determine if we're in a browser environment
+const isBrowser = typeof window !== 'undefined' && typeof window.document !== 'undefined';
+
 export class FirestoreClient {
     private db: Firestore;
 
@@ -26,7 +29,7 @@ export class FirestoreClient {
           const meshDoc = await transaction.get(meshRef);
           
           if (!meshDoc.exists()) {
-            // Create new mesh
+            // Create new mesh with the agent as leader if role is 'leader'
             transaction.set(meshRef, {
               leaders: [agentId],
               primaryLeader: validatedRole === 'leader' ? agentId : null,
@@ -37,12 +40,22 @@ export class FirestoreClient {
             // Update existing mesh
             const meshData = meshDoc.data();
             const leaders = meshData?.leaders || [];
-            if (!leaders.includes(agentId)) {
+            const currentPrimaryLeader = meshData?.primaryLeader;
+            
+            // Only update leaders array if this is a new leader
+            if (validatedRole === 'leader' && !leaders.includes(agentId)) {
               leaders.push(agentId);
             }
+
+            // Determine the primary leader
+            let primaryLeader = currentPrimaryLeader;
+            if (validatedRole === 'leader' && !currentPrimaryLeader) {
+              primaryLeader = agentId;
+            }
+
             transaction.update(meshRef, {
-              leaders,
-              primaryLeader: validatedRole === 'leader' ? agentId : meshData?.primaryLeader,
+              leaders: leaders,
+              primaryLeader: primaryLeader,
               updatedAt: serverTimestamp()
             });
           }

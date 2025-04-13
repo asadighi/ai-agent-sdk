@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [react()],
   resolve: {
     alias: {
@@ -11,6 +11,7 @@ export default defineConfig({
     },
     extensions: ['.ts', '.tsx', '.js', '.jsx']
   },
+  envDir: '../..',  // Look for .env files in the root directory
   build: {
     outDir: 'dist',
     emptyOutDir: true,
@@ -24,4 +25,4 @@ export default defineConfig({
       }
     }
   }
-})
+}))

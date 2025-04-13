@@ -1,4 +1,4 @@
-import { AgentRole, FirestoreClient, getFirestoreInstance } from '@ai-agent/sdk';
+import { AgentRole, FirestoreClient, getFirestoreInstance } from '@ai-agent/sdk/browser';
 import { useState, useEffect } from 'react';
 import './App.css';
 import { Container, Typography, Box, Paper, TextField, Button, Select, MenuItem, FormControl, InputLabel, List, ListItem, ListItemText } from '@mui/material';
@@ -17,7 +17,7 @@ interface Event {
 
 function App() {
   const [meshId, setMeshId] = useState('default-mesh');
-  const [role, setRole] = useState<AgentRole>('active');
+  const [role, setRole] = useState<AgentRole>(AgentRole.Active);
   const [agentId, setAgentId] = useState('');
   const [events, setEvents] = useState<Event[]>([]);
   const [isRunning, setIsRunning] = useState(false);
