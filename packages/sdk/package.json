@@ -1,0 +1,84 @@
+{
+  "name": "@ai-agent/sdk",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./browser": {
+      "types": "./dist/browser.d.ts",
+      "import": "./dist/browser.js",
+      "require": "./dist/browser.js",
+      "default": "./dist/browser.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/types.js",
+      "require": "./dist/types.js",
+      "default": "./dist/types.js"
+    },
+    "./fireStoreClient": {
+      "types": "./dist/fireStoreClient.d.ts",
+      "import": "./dist/fireStoreClient.js",
+      "require": "./dist/fireStoreClient.js",
+      "default": "./dist/fireStoreClient.js"
+    },
+    "./firebaseConfig": {
+      "types": "./dist/firebaseConfig.d.ts",
+      "import": "./dist/firebaseConfig.js",
+      "require": "./dist/firebaseConfig.js",
+      "default": "./dist/firebaseConfig.js"
+    },
+    "./memory": {
+      "types": "./dist/memory.d.ts",
+      "import": "./dist/memory.js",
+      "require": "./dist/memory.js",
+      "default": "./dist/memory.js"
+    },
+    "./agent": {
+      "types": "./dist/agent.d.ts",
+      "import": "./dist/agent.js",
+      "require": "./dist/agent.js",
+      "default": "./dist/agent.js"
+    },
+    "./leader": {
+      "types": "./dist/leader.d.ts",
+      "import": "./dist/leader.js",
+      "require": "./dist/leader.js",
+      "default": "./dist/leader.js"
+    },
+    "./webWorker": {
+      "types": "./dist/webWorker.d.ts",
+      "import": "./dist/webWorker.js",
+      "require": "./dist/webWorker.js",
+      "default": "./dist/webWorker.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "rebuild": "npm run clean && npm run build",
+    "build": "tsc",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "dev": "tsc --watch",
+    "lint": "eslint src/**/*.ts",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "firebase": "^10.8.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^18.16.1",
+    "typescript": "^5.3.3",
+    "eslint": "^8.57.0"
+  }
+} 

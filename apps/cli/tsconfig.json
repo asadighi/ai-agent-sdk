@@ -1,0 +1,29 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "module": "ES2020",
+    "moduleResolution": "bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@ai-agent/sdk": ["../../packages/sdk/dist"],
+      "@ai-agent/sdk/*": ["../../packages/sdk/dist/*"]
+    },
+    "types": ["node"],
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "composite": true,
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "preserveSymlinks": false
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"],
+  "references": [
+    { "path": "../../packages/sdk" }
+  ]
+} 

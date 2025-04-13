@@ -1,0 +1,26 @@
+{
+  "name": "@ai-agent/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "rebuild": "cd ../../packages/sdk && npm run rebuild && cd ../../apps/cli && npm run clean && npm run build",
+    "dev": "ts-node src/index.ts",
+    "start": "node dist/index.js",
+    "build": "tsc --build",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo"
+    
+  },
+  "dependencies": {
+    "@ai-agent/sdk": "file:../../packages/sdk",
+    "commander": "^11.1.0",
+    "dotenv": "^16.4.5",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.16.1",
+    "@types/uuid": "^9.0.0",
+    "typescript": "^5.3.3"
+  }
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agent Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #events {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 20px;
+        }
+        .event {
+            margin: 5px 0;
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <h1>Agent Demo</h1>
+    <div>
+        <button id="startAgent">Start Agent</button>
+        <div id="agentId"></div>
+    </div>
+    <div id="events"></div>
+
+    <script type="module">
+        const worker = new Worker('./dist/webWorker.js', { type: 'module' });
+        const eventsDiv = document.getElementById('events');
+        const agentIdDiv = document.getElementById('agentId');
+        const startButton = document.getElementById('startAgent');
+
+        worker.onmessage = (e) => {
+            const { type, event, agentId } = e.data;
+            if (type === 'ready') {
+                agentIdDiv.textContent = `Agent ID: ${agentId}`;
+            } else if (type === 'event') {
+                const eventDiv = document.createElement('div');
+                eventDiv.className = 'event';
+                eventDiv.textContent = JSON.stringify(event, null, 2);
+                eventsDiv.appendChild(eventDiv);
+                eventsDiv.scrollTop = eventsDiv.scrollHeight;
+            }
+        };
+
+        startButton.addEventListener('click', () => {
+            worker.postMessage({
+                meshId: 'demo-mesh',
+                role: 'active_player'
+            });
+            startButton.disabled = true;
+        });
+    </script>
+</body>
+</html> 
