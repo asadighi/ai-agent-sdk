@@ -48,7 +48,6 @@ let workerAgent: WebWorkerAgent | null = null;
 // Handle messages from the main thread
 self.onmessage = async (event: MessageEvent) => {
   const { type, data } = event.data;
-
   switch (type) {
     case 'init':
       const config = data as AgentConfig;

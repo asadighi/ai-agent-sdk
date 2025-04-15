@@ -12,9 +12,13 @@
     "dev": "npm run dev --workspaces",
     "start": "npm run start --workspaces",
     "start:cli": "npm run start --workspace=@ai-agent/cli --",
-    "start:web": "npm run dev --workspace=@ai-agent/web"
+    "start:web": "npm run dev --workspace=@ai-agent/web",
+    "dev:all": "concurrently \"npm run dev --workspace=@ai-agent/sdk\" \"npm run dev --workspace=@ai-agent/web\""
   },
   "dependencies": {
     "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
   }
 }
