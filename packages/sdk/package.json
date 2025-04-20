@@ -1,77 +1,15 @@
 {
   "name": "@ai-agent/sdk",
   "version": "0.1.0",
+  "private": true,
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": {
-        "node": "./dist/index.js",
-        "browser": "./dist/browser.js",
-        "default": "./dist/index.js"
-      },
-      "require": {
-        "node": "./dist/index.js",
-        "browser": "./dist/browser.js",
-        "default": "./dist/index.js"
-      }
-    },
-    "./browser": {
-      "types": "./dist/browser.d.ts",
-      "import": "./dist/browser.js",
-      "require": "./dist/browser.js",
-      "default": "./dist/browser.js"
-    },
-    "./types": {
-      "types": "./dist/types.d.ts",
-      "import": "./dist/types.js",
-      "require": "./dist/types.js",
-      "default": "./dist/types.js"
-    },
-    "./fireStoreClient": {
-      "types": "./dist/fireStoreClient.d.ts",
-      "import": "./dist/fireStoreClient.js",
-      "require": "./dist/fireStoreClient.js",
-      "default": "./dist/fireStoreClient.js"
-    },
-    "./firebaseConfig": {
-      "types": "./dist/firebaseConfig.d.ts",
-      "import": "./dist/firebaseConfig.js",
-      "require": "./dist/firebaseConfig.js",
-      "default": "./dist/firebaseConfig.js"
-    },
-    "./memory": {
-      "types": "./dist/memory.d.ts",
-      "import": "./dist/memory.js",
-      "require": "./dist/memory.js",
-      "default": "./dist/memory.js"
-    },
-    "./agent": {
-      "types": "./dist/agent.d.ts",
-      "import": "./dist/agent.js",
-      "require": "./dist/agent.js",
-      "default": "./dist/agent.js"
-    },
-    "./leader": {
-      "types": "./dist/leader.d.ts",
-      "import": "./dist/leader.js",
-      "require": "./dist/leader.js",
-      "default": "./dist/leader.js"
-    },
-    "./webWorker": {
-      "types": "./dist/webWorker.d.ts",
-      "import": {
-        "browser": "./dist/webWorker.js",
-        "default": null
-      },
-      "require": {
-        "browser": "./dist/webWorker.js",
-        "default": null
-      },
-      "default": null
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     }
   },
   "files": [
@@ -82,16 +20,21 @@
     "build": "tsc",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "dev": "tsc --watch",
-    "lint": "eslint src/**/*.ts",
-    "prepare": "npm run build"
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
+    "@google-cloud/firestore": "^7.0.0",
     "firebase": "^10.8.0",
-    "dotenv": "^16.4.5"
+    "@firebase/app-types": "^0.9.0",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@types/node": "^18.16.1",
-    "typescript": "^5.3.3",
-    "eslint": "^8.57.0"
+    "@types/jest": "^29.5.12",
+    "@types/uuid": "^9.0.8",
+    "dotenv": "^16.3.1",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.3.3"
   }
-} 
+}

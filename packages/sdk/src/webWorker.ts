@@ -11,7 +11,12 @@ class WebWorkerAgent {
 
   async init() {
     try {
-      await FirestoreClient.registerAgent(this.agentId, this.config.meshId, this.config.role);
+      const client = FirestoreClient.getInstance();
+      await client.registerAgent({
+        agentId: this.agentId,
+        meshId: this.config.meshId,
+        role: this.config.role
+      });
       this.isInitialized = true;
       self.postMessage({ type: 'initialized' });
     } catch (error: unknown) {
@@ -26,13 +31,13 @@ class WebWorkerAgent {
         self.postMessage({ type: 'error', error: 'Agent not initialized' });
         return;
       }
-      await FirestoreClient.emitEvent(this.config.meshId, {
-        from: this.agentId,
+      const client = FirestoreClient.getInstance();
+      await client.emitEvent({
+        meshId: this.config.meshId,
+        agentId: this.agentId,
         type: 'action',
-        payload: action.payload,
-        permission: {
-          scope: 'public'
-        }
+        data: action.payload,
+        scope: 'public'
       });
       self.postMessage({ type: 'action_sent' });
     } catch (error: unknown) {

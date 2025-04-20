@@ -3,15 +3,15 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 
 // https://vite.dev/config/
-export default defineConfig(({ mode }) => ({
+export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@ai-agent/sdk': path.resolve(__dirname, '../../packages/sdk/dist')
+      '@ai-agent/sdk': path.resolve(__dirname, '../../packages/sdk/src')
     },
     extensions: ['.ts', '.tsx', '.js', '.jsx']
   },
-  envDir: '../..',  // Look for .env files in the root directory
+  envDir: '.',  // Look for .env files in the web app directory
   build: {
     outDir: 'dist',
     emptyOutDir: true,
@@ -24,5 +24,8 @@ export default defineConfig(({ mode }) => ({
         }
       }
     }
+  },
+  optimizeDeps: {
+    exclude: ['firebase/firestore', 'firebase/app']
   }
-}))
+})

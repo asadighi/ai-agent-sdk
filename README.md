@@ -2,6 +2,32 @@
 
 A distributed real-time multiplayer game infrastructure that allows running multiple agents (both CLI and web-based) that can communicate with each other through Firebase.
 
+## 🎯 Quick Example: Running a Mesh with Multiple Agents
+
+Let's run a mesh with 4 agents: 2 leaders and 2 workers. Open 4 terminal windows and run:
+
+```bash
+# Terminal 1 - Primary Leader
+npm run start:cli mesh1 leader
+
+# Terminal 2 - Backup Leader
+npm run start:cli mesh1 leader
+
+# Terminal 3 - Worker 1
+npm run start:cli mesh1 active
+
+# Terminal 4 - Worker 2
+npm run start:cli mesh1 active
+```
+
+Or, if you prefer the web interface, open your browser to `http://localhost:5173` and:
+1. Set the mesh ID to "mesh1"
+2. Create 4 browser tabs
+3. Set roles to "leader" in two tabs and "active" in the other two
+4. Start all agents
+
+The leaders will coordinate the mesh while the workers participate in the game. All agents will communicate in real-time through Firebase.
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -33,24 +59,62 @@ FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 FIREBASE_APP_ID=your_app_id
 ```
 
-4. Build all packages:
-```bash
-npm run build
-```
+## 🛠️ Available Scripts
 
-### Running Agents
+### From Root Directory
 
-#### CLI Agent
+#### Building
+- `npm run build` - Build all packages and apps
+- `npm run build:web` - Build only the web app
+- `npm run build:cli` - Build only the CLI app
+- `npm run build:sdk` - Build only the SDK package
+
+#### Development
+- `npm run dev:web` - Start the web app in development mode
+- `npm run dev:cli` - Start the CLI app in development mode
+- `npm run dev:sdk` - Start the SDK package in development mode
+- `npm run dev:all` - Start both SDK and web app in development mode
+
+#### Production
+- `npm run start:cli` - Start the CLI app in production mode
+- `npm run start:web` - Start the web app in development mode
+
+#### Clean and Rebuild
+- `npm run rebuild:all` - Clean and rebuild everything
+- `npm run rebuild:web` - Clean and rebuild the web app
+- `npm run rebuild:cli` - Clean and rebuild the CLI app
+- `npm run rebuild:sdk` - Clean and rebuild the SDK package
+
+### From Web App Directory (`apps/web`)
+- `npm run build` - Build the web app
+- `npm run dev` - Start the web app in development mode
+- `npm run start` - Same as dev (for consistency)
+- `npm run start:root` - Start from root directory
+- `npm run rebuild` - Clean and rebuild the web app
+
+### From CLI App Directory (`apps/cli`)
+- `npm run build` - Build the CLI app
+- `npm run dev` - Start the CLI app in development mode
+- `npm run start` - Start the CLI app in production mode
+- `npm run start:root` - Start from root directory
+- `npm run rebuild` - Clean and rebuild the CLI app
+
+## 🎮 Running Agents
+
+### CLI Agent
 
 To run a CLI agent:
 ```bash
-cd apps/cli
+# From root directory
+npm run start:cli [meshId] [role]
+
+# From CLI directory
 npm run start [meshId] [role]
 ```
 
 Example:
 ```bash
-npm run start mesh1 leader
+npm run start:cli mesh1 leader
 ```
 
 Available roles:
@@ -60,11 +124,14 @@ Available roles:
 - `public` (sees only public state)
 - `banned` (no access)
 
-#### Web Interface
+### Web Interface
 
 1. Start the development server:
 ```bash
-cd apps/web
+# From root directory
+npm run start:web
+
+# From web directory
 npm run dev
 ```
 
@@ -98,13 +165,12 @@ ai-agent-sdk/
 ├── apps/
 │   ├── cli/           # Command-line interface
 │   │   ├── src/       # Source files
-│   │   ├── dist/      # Compiled output
 │   │   └── package.json
-│   └── web/           # React web interface
+│   └── web/           # Web interface
 │       ├── src/       # Source files
 │       └── package.json
-├── package.json       # Root package.json
-└── turbo.json        # Turborepo configuration
+├── package.json       # Root package.json with workspace config
+└── README.md          # This file
 ```
 
 ## 🔄 How It Works

@@ -6,4 +6,8 @@ export * from './memory.js';
 export * from './types.js';
 export * from './validation.js';
 export * from './webWorker.js';
-export { getFirestoreInstance } from './firebaseConfig.js'; 
+import { FirestoreClient } from './fireStoreClient.js';
+
+export const getFirestoreInstance = () => {
+    return FirestoreClient.getInstance().getDb();
+}; 

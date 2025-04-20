@@ -1,15 +1,19 @@
 import { config } from 'dotenv';
-import { resolve } from 'path';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import fs from 'fs';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 // Load environment variables from the root directory
-const envPath = resolve(process.cwd(), '../../.env');
+const envPath = resolve(__dirname, '../.env');
 console.log('CLI: Attempting to load environment variables from:', envPath);
 
 // Check if .env file exists
 if (!fs.existsSync(envPath)) {
   console.error('CLI: .env file not found at:', envPath);
-  console.error('CLI: Please ensure the .env file exists in the root directory of the project');
+  console.error('CLI: Please ensure the .env file exists in the CLI app directory');
   process.exit(1);
 }
 

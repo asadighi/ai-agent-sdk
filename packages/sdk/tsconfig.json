@@ -11,13 +11,14 @@
     "rootDir": "./src",
     "skipLibCheck": true,
     "lib": ["ES2020", "DOM", "WebWorker"],
-    "types": ["node"],
+    "types": ["node", "jest", "firebase/app"],
     "declarationMap": true,
     "sourceMap": true,
     "composite": true,
     "allowJs": true,
     "resolveJsonModule": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"],
