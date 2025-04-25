@@ -6,19 +6,16 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
     "strict": true,
+    "moduleResolution": "node",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
-    "types": ["node", "jest"],
-    "composite": true,
-    "allowJs": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true
+    "baseUrl": ".",
+    "paths": {
+      "@ai-agent/multi-logger/*": ["packages/*/src"]
+    },
+    "types": ["node"]
   },
-  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 } 

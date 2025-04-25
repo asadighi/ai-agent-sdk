@@ -15,10 +15,13 @@
     "sourceMap": true,
     "allowJs": true,
     "isolatedModules": true,
-    "preserveSymlinks": true
+    "preserveSymlinks": true,
+    "types": ["jest"]
   },
   "exclude": ["**/node_modules", "**/dist"],
   "references": [
+    { "path": "./packages/core-sdk" },
+    { "path": "./packages/core-sdk-tests" },
     { "path": "./packages/sdk" },
     { "path": "./apps/cli" },
     { "path": "./apps/web" }

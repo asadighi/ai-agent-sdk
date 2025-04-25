@@ -1,61 +1,37 @@
-import { IMeshStore, MeshClient as IMeshClient, AgentRole, AgentStatus, Heartbeat, PresenceStatus, ElectionMessage, Agent } from './types.js';
-import { FirebaseMeshStore } from './firebaseMeshStore.js';
-import { IFirebaseConfig } from './firebaseConfig.js';
-import { initializeApp, FirebaseApp } from 'firebase/app';
-import { getFirestore, Firestore, doc, updateDoc, Timestamp } from 'firebase/firestore';
-import { Auth } from 'firebase/auth';
+import { IStorageClient } from '@ai-agent/common-sdk';
+import { AgentRole, AgentStatus, Heartbeat, PresenceStatus, ElectionMessage, Agent } from '@ai-agent/common-sdk';
 
-export class MeshClient implements IMeshStore, IMeshClient {
+export class MeshClient {
     private static instance: MeshClient | null = null;
-    private app!: FirebaseApp;
-    private db!: Firestore;
-    private auth: Auth | null = null;
-    private store!: IMeshStore;
+    private store: IStorageClient;
     private agentId: string;
 
-    constructor(config: IFirebaseConfig, agentId: string = 'default-agent') {
+    constructor(store: IStorageClient, agentId: string = 'default-agent') {
         this.agentId = agentId;
-        this.store = FirebaseMeshStore.getInstance(config, agentId);
+        this.store = store;
         
         if (MeshClient.instance) {
             return MeshClient.instance;
         }
 
-        this.app = initializeApp(config);
-        this.db = getFirestore(this.app);
         MeshClient.instance = this;
     }
 
-    static getInstance(config: IFirebaseConfig, agentId: string = 'default-agent'): MeshClient {
+    static getInstance(store: IStorageClient, agentId: string = 'default-agent'): MeshClient {
         if (!MeshClient.instance) {
-            MeshClient.instance = new MeshClient(config, agentId);
+            MeshClient.instance = new MeshClient(store, agentId);
         }
         return MeshClient.instance;
     }
 
-    public getDb(): Firestore {
-        return this.db;
-    }
-
-    // IMeshStore methods
+    // Storage methods
     async registerAgent(agent: { meshId: string; agentId: string; role: AgentRole; status: AgentStatus }): Promise<{ meshId: string; agentId: string }> {
-        return this.store.registerAgent(agent);
+        await this.store.registerAgent(agent);
+        return { meshId: agent.meshId, agentId: agent.agentId };
     }
 
     async updateAgentStatus(meshId: string, agentId: string, status: AgentStatus): Promise<void> {
-        const agentRef = doc(this.db, 'meshes', meshId, 'agents', agentId);
-        await updateDoc(agentRef, {
-            status,
-            lastSeen: Timestamp.now()
-        });
-    }
-
-    async updateAgentRole(meshId: string, agentId: string, role: AgentRole): Promise<void> {
-        const agentRef = doc(this.db, 'meshes', meshId, 'agents', agentId);
-        await updateDoc(agentRef, {
-            role,
-            lastSeen: Timestamp.now()
-        });
+        await this.store.updateAgentStatus(meshId, agentId, status);
     }
 
     async updateHeartbeat(meshId: string, heartbeat: Heartbeat): Promise<void> {
@@ -64,14 +40,6 @@ export class MeshClient implements IMeshStore, IMeshClient {
 
     async getAgentStatuses(meshId: string): Promise<Map<string, PresenceStatus>> {
         return this.store.getAgentStatuses(meshId);
-    }
-
-    subscribeToHeartbeats(meshId: string, callback: (heartbeats: Map<string, Heartbeat>) => void): () => void {
-        return this.store.subscribeToHeartbeats(meshId, callback);
-    }
-
-    subscribeToElectionMessages(meshId: string, callback: (messages: Map<string, ElectionMessage>) => void): () => void {
-        return this.store.subscribeToElectionMessages(meshId, callback);
     }
 
     async sendElectionMessage(meshId: string, message: ElectionMessage): Promise<void> {
@@ -102,13 +70,13 @@ export class MeshClient implements IMeshStore, IMeshClient {
     }
 
     async updateAgent(agent: { meshId: string; agentId: string; role: AgentRole; status: AgentStatus }): Promise<void> {
-        await this.updateAgentStatus(agent.meshId, agent.agentId, agent.status);
+        await this.store.updateAgentStatus(agent.meshId, agent.agentId, agent.status);
     }
 
     async getAgents(meshId: string): Promise<Map<string, Agent>> {
         const statuses = await this.getAgentStatuses(meshId);
         const agents = new Map<string, Agent>();
-        for (const [agentId, status] of statuses) {
+        statuses.forEach((status, agentId) => {
             agents.set(agentId, {
                 meshId,
                 agentId,
@@ -116,7 +84,7 @@ export class MeshClient implements IMeshStore, IMeshClient {
                 status: status.status,
                 lastHeartbeat: status.lastSeen
             });
-        }
+        });
         return agents;
     }
 } 

@@ -1,9 +1,14 @@
-import { AgentRole, AgentStatus, Heartbeat, PresenceStatus, getMeshClient, ConnectionState } from './index.js';
+import { AgentRole, AgentStatus, Heartbeat, PresenceStatus, getMeshClient, ConnectionState, IAgentConfig, IStorageClient } from '@ai-agent/common-sdk';
 import { v4 as uuidv4 } from 'uuid';
 import { validateRole, validateAgentConfig, ValidationError } from './validation.js';
 import { IFirebaseConfig } from './firebaseConfig.js';
-import { Logger } from '@ai-agent/multi-logger';
+import type { ILogger } from '@ai-agent/multi-logger';
 import { LogLevel } from './types.js';
+
+export interface IAgentDependencies {
+    logger: ILogger;
+    storageClient: IStorageClient;
+}
 
 export class Agent {
     private meshId: string;
@@ -13,13 +18,13 @@ export class Agent {
     private heartbeatInterval: number;
     private electionInterval: number;
     private maxElectionTimeout: number;
-    private client: ReturnType<typeof getMeshClient>;
+    private client: IStorageClient;
     private unsubscribe: (() => void) | null = null;
     private heartbeatTimer?: NodeJS.Timeout;
     private electionTimer?: NodeJS.Timeout;
     private currentTerm = 0;
     private fencingToken: string;
-    private logger: Logger;
+    private logger: ILogger;
     private electionTimeout?: NodeJS.Timeout;
     private leader?: Agent;
     private worker?: Agent;
@@ -30,32 +35,18 @@ export class Agent {
     private readonly MAX_ELECTION_TIMEOUT = 30000; // 30 seconds
     private readonly STALE_LEADER_THRESHOLD = 3; // Number of missed heartbeats before considering leader stale
 
-    constructor(config: {
-        meshId: string;
-        agentId: string;
-        role: AgentRole;
-        status: AgentStatus;
-        heartbeatInterval: number;
-        electionInterval: number;
-        maxElectionTimeout: number;
-        firebaseConfig: IFirebaseConfig;
-    }) {
+    constructor(config: IAgentConfig, dependencies: IAgentDependencies) {
         this.meshId = config.meshId;
         this.agentId = config.agentId;
         this.role = config.role;
         this._status = config.status;
-        this.heartbeatInterval = config.heartbeatInterval;
-        this.electionInterval = config.electionInterval;
-        this.maxElectionTimeout = config.maxElectionTimeout;
-        this.client = getMeshClient(config.firebaseConfig);
+        this.heartbeatInterval = config.heartbeatInterval || 5000;
+        this.electionInterval = config.electionInterval || 10000;
+        this.maxElectionTimeout = config.maxElectionTimeout || 30000;
+        this.client = dependencies.storageClient;
         this.fencingToken = uuidv4();
-        this.logger = new Logger({
-            logLevel: LogLevel.INFO,
-            logToConsole: true,
-            maxLogs: 1000,
-            rotationInterval: 60000
-        });
-        this.connectionState = ConnectionState.getInstance(this.client.getDb());
+        this.logger = dependencies.logger;
+        this.connectionState = ConnectionState.getInstance();
         this.connectionState.subscribeToConnectionState((isOnline) => {
             this.handleConnectionStateChange(isOnline);
         });
@@ -177,7 +168,9 @@ export class Agent {
         }
         
         // Unsubscribe from connection state changes
-        this.connectionState.unsubscribeFromConnectionState();
+        if (this.connectionState) {
+            this.connectionState.unsubscribeFromConnectionState(() => {});
+        }
         
         // Update status to terminated
         try {

@@ -1,31 +1,28 @@
 import { defineConfig } from 'vitest/config';
-import { fileURLToPath } from 'url';
-import { dirname, resolve } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { resolve } from 'path';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
+  plugins: [tsconfigPaths()],
   test: {
-    environment: 'node',
     include: ['src/**/*.test.ts'],
+    environment: 'node',
     globals: true,
-    setupFiles: ['./src/__tests__/setup.ts'],
+    setupFiles: ['src/__tests__/setup.ts'],
     coverage: {
-      provider: 'v8',
       reporter: ['text', 'json', 'html'],
     },
     alias: {
       '@ai-agent/core-sdk': resolve(__dirname, '../core-sdk/src'),
     },
     deps: {
+      inline: ['@ai-agent/core-sdk'],
       interopDefault: true,
+      registerNodeLoader: true,
     },
-    pool: 'threads',
-    poolOptions: {
-      threads: {
-        isolate: false
-      }
-    }
+    testTimeout: 10000,
+  },
+  resolve: {
+    extensions: ['.ts', '.js', '.json'],
   },
 }); 

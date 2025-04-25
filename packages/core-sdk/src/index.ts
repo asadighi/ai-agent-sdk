@@ -32,3 +32,8 @@ export const getMeshClient = (config: IFirebaseConfig) => new MeshClient(config)
 // Main entry point
 export * from './browser.js';
 export { FileStorage } from './node-storage.js';
+
+export * from './agent';
+export * from './mesh';
+export * from './connectionState';
+export * from './di/container';

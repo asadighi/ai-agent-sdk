@@ -14,9 +14,12 @@
     "baseUrl": ".",
     "paths": {
       "@ai-agent/core-sdk": ["../core-sdk/src"]
-    }
+    },
+    "allowJs": true,
+    "isolatedModules": true,
+    "noEmit": true
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules", "dist"],
   "references": [
     { "path": "../core-sdk/tsconfig.json" }

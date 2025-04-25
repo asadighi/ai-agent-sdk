@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Mesh, Agent, AgentRole, AgentStatus, MeshClient, FirebaseMeshStore, IFirebaseConfig } from '@ai-agent/core-sdk';
 import { config } from 'dotenv';
-import { meshClient } from './setup.js';
+import { meshClient } from './setup';
 
 // Load environment variables
 config();

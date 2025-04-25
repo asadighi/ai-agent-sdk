@@ -1,36 +1,45 @@
-import { config } from 'dotenv';
+import { container } from '@ai-agent/core-sdk';
+import { MockConnectionState } from './mocks/connectionState';
 import { vi } from 'vitest';
-import { MeshClient, ConnectionState } from '@ai-agent/core-sdk';
+import dotenv from 'dotenv';
+import { Firestore } from 'firebase/firestore';
 
 // Load environment variables
-config();
+dotenv.config();
 
-// Mock only the browser-specific ConnectionState
-vi.mock('@ai-agent/core-sdk', async () => {
-    const actual = await vi.importActual('@ai-agent/core-sdk') as Record<string, unknown>;
-    const mockConnectionState = {
-        getInstance: () => ({
-            subscribeToConnectionState: vi.fn(),
-            unsubscribeFromConnectionState: vi.fn(),
-            getIsOnline: () => true
-        })
-    };
+// Create mock Firestore database
+const mockDb = {
+  collection: vi.fn().mockReturnThis(),
+  doc: vi.fn().mockReturnThis(),
+  get: vi.fn().mockResolvedValue({}),
+  set: vi.fn().mockResolvedValue(undefined),
+  update: vi.fn().mockResolvedValue(undefined),
+  delete: vi.fn().mockResolvedValue(undefined),
+  onSnapshot: vi.fn().mockReturnValue(() => {})
+};
 
-    return {
-        ...actual,
-        ConnectionState: mockConnectionState
-    };
+// Register mock connection state with container
+container.register('ConnectionState', {
+  useValue: new MockConnectionState(),
 });
 
 // Create test configuration
-const testConfig = {
-    apiKey: 'test-api-key',
-    authDomain: 'test-auth-domain',
-    projectId: 'test-project-id',
-    storageBucket: 'test-storage-bucket',
-    messagingSenderId: 'test-messaging-sender-id',
-    appId: 'test-app-id'
+export const testConfig = {
+  meshId: 'test-mesh',
+  agentId: 'test-agent',
+  firebaseConfig: {
+    apiKey: process.env.FIREBASE_API_KEY || 'test-api-key',
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN || 'test-auth-domain',
+    projectId: process.env.FIREBASE_PROJECT_ID || 'test-project-id',
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET || 'test-storage-bucket',
+    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || 'test-sender-id',
+    appId: process.env.FIREBASE_APP_ID || 'test-app-id',
+  },
+  db: mockDb as Firestore,
 };
 
-// Export test client with real SDK implementation but mocked connectivity
-export const meshClient = MeshClient.getInstance(testConfig);
+// Export the mock client
+export const meshClient = {
+  db: mockDb,
+  connectionState: new MockConnectionState()
+};

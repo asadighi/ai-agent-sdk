@@ -4,20 +4,25 @@
   "private": true,
   "workspaces": [
     "packages/*",
+    "packages/multi-logger/packages/*",
     "apps/*"
   ],
   "scripts": {
-    "build": "npm run build --workspaces",
-    "dev": "npm run dev --workspaces",
-    "test": "npm run test --workspaces",
-    "clean": "npm run clean --workspaces",
-    "lint": "npm run lint --workspaces",
-    "start:web": "cd apps/web && npm run dev"
+    "build": "pnpm -r build",
+    "dev": "pnpm -r dev",
+    "test": "pnpm -r test",
+    "clean": "pnpm -r clean",
+    "lint": "pnpm -r lint",
+    "start:web": "cd apps/web && pnpm run dev",
+    "build:multi-logger": "pnpm --filter @ai-agent/multi-logger/types build && pnpm --filter @ai-agent/multi-logger/node build && pnpm --filter @ai-agent/multi-logger/web build && pnpm --filter @ai-agent/multi-logger/ui build",
+    "test:multi-logger": "pnpm --filter @ai-agent/multi-logger/types test && pnpm --filter @ai-agent/multi-logger/node test && pnpm --filter @ai-agent/multi-logger/web test && pnpm --filter @ai-agent/multi-logger/ui test",
+    "test:multi-logger:watch": "pnpm --filter @ai-agent/multi-logger/types test:watch && pnpm --filter @ai-agent/multi-logger/node test:watch && pnpm --filter @ai-agent/multi-logger/web test:watch && pnpm --filter @ai-agent/multi-logger/ui test:watch"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@vitest/coverage-v8": "^1.2.2",
     "turbo": "^1.10.16",
     "typescript": "^5.3.3",
-    "vitest": "^1.2.2",
-    "@vitest/coverage-v8": "^1.2.2"
+    "vitest": "^1.2.2"
   }
 }

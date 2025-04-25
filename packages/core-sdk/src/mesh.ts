@@ -1,4 +1,4 @@
-import { AgentRole, AgentStatus, Heartbeat, ElectionMessage, PresenceStatus, InitialLeaderMessage } from './types.js';
+import { AgentRole, AgentStatus, Heartbeat, ElectionMessage, PresenceStatus, InitialLeaderMessage, getMeshClient, ConnectionState } from './index.js';
 import { MeshClient } from './meshClient.js';
 import { IFirebaseConfig } from './firebaseConfig.js';
 import { v4 as uuidv4 } from 'uuid';
@@ -8,6 +8,7 @@ import { Worker } from './worker.js';
 import { Candidate } from './candidate.js';
 import { Logger } from '@ai-agent/multi-logger';
 import { LogLevel } from './types.js';
+import { validateRole, validateAgentConfig, ValidationError } from './validation.js';
 
 export class Mesh {
     private meshId: string;
@@ -29,15 +30,26 @@ export class Mesh {
     private readonly ELECTION_INTERVAL = 10000; // 10 seconds
     private readonly MAX_ELECTION_TIMEOUT = 30000; // 30 seconds
     private readonly STALE_LEADER_THRESHOLD = 10; // Number of missed heartbeats before considering leader stale (10 seconds)
+    private connectionState: ConnectionState;
+    private defaultHeartbeatInterval: number;
+    private defaultElectionInterval: number;
+    private defaultMaxElectionTimeout: number;
 
     constructor(config: {
         meshId: string;
         firebaseConfig: IFirebaseConfig;
+        heartbeatInterval?: number;
+        electionInterval?: number;
+        maxElectionTimeout?: number;
     }) {
         this.meshId = config.meshId;
         this.status = AgentStatus.Follower;
         this.firebaseConfig = config.firebaseConfig;
         this.client = new MeshClient(this.firebaseConfig);
+        this.connectionState = ConnectionState.getInstance();
+        this.defaultHeartbeatInterval = config.heartbeatInterval || 5000;
+        this.defaultElectionInterval = config.electionInterval || 10000;
+        this.defaultMaxElectionTimeout = config.maxElectionTimeout || 30000;
         this.logger = new Logger({
             logLevel: LogLevel.INFO,
             logToConsole: true,

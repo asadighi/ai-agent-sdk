@@ -1,24 +1,24 @@
-import { Logger as MultiLogger, LogLevel, type LogEntry, type LoggerConfig } from '@ai-agent/multi-logger';
+import { LogLevel, type LogEntry, type LoggerConfig, type ILogger } from '@ai-agent/multi-logger/types';
+import { container, Tokens } from '@ai-agent/di-container';
 
 // Re-export everything from multi-logger
-export { MultiLogger as Logger, LogLevel, type LogEntry, type LoggerConfig };
+export { LogLevel, type LogEntry, type LoggerConfig, type ILogger };
 
-// Create a default logger instance for convenience
-const defaultLogger = new MultiLogger({
-    logLevel: LogLevel.INFO,
-    logToConsole: true,
-    maxLogs: 1000,
-    rotationInterval: 24 * 60 * 60 * 1000 // 1 day
-});
+/**
+ * Gets the logger instance from the dependency injection container.
+ * This should be used by all core-sdk components that need logging.
+ * 
+ * @throws Error if no logger has been registered in the container
+ */
+export function getLogger(): ILogger {
+    return container.get<ILogger>(Tokens.Logger);
+}
 
-// Export convenience methods from the default instance
-export const debug = defaultLogger.debug.bind(defaultLogger);
-export const info = defaultLogger.info.bind(defaultLogger);
-export const warn = defaultLogger.warn.bind(defaultLogger);
-export const error = defaultLogger.error.bind(defaultLogger);
-
-// Export the default logger instance
-export default defaultLogger;
+// Export convenience methods that delegate to the injected logger
+export const debug = (message: string, data?: any): Promise<void> => getLogger().debug(message, data);
+export const info = (message: string, data?: any): Promise<void> => getLogger().info(message, data);
+export const warn = (message: string, data?: any): Promise<void> => getLogger().warn(message, data);
+export const error = (message: string, data?: any): Promise<void> => getLogger().error(message, data);
 
 export interface LoggerInterface {
   on(event: string, callback: (data: any) => void): void;

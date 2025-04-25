@@ -1,41 +1,62 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { FirebaseMeshStore, AgentRole, AgentStatus } from '@ai-agent/core-sdk';
-import type { IFirebaseConfig } from '@ai-agent/core-sdk';
-import { config } from 'dotenv';
-
-// Load environment variables
-config();
+import { MeshClient, FirebaseMeshStore, AgentRole, AgentStatus, IFirebaseConfig } from '@ai-agent/core-sdk';
 
 describe('FirebaseMeshStore', () => {
-    let store: FirebaseMeshStore;
+  const firebaseConfig: IFirebaseConfig = {
+    apiKey: 'test-api-key',
+    authDomain: 'test-domain.firebaseapp.com',
+    projectId: 'test-project',
+    storageBucket: 'test-bucket.appspot.com',
+    messagingSenderId: '123456789',
+    appId: '1:123456789:web:abcdef'
+  };
 
-    beforeEach(() => {
-        const firebaseConfig: IFirebaseConfig = {
-            apiKey: 'test-api-key',
-            authDomain: 'test-auth-domain',
-            projectId: 'test-project-id',
-            storageBucket: 'test-storage-bucket',
-            messagingSenderId: 'test-messaging-sender-id',
-            appId: 'test-app-id'
-        };
-        store = FirebaseMeshStore.getInstance(firebaseConfig, 'test-agent');
-    });
+  let meshClient: MeshClient;
+  let store: FirebaseMeshStore;
+  const testMeshId = 'test-mesh';
 
-    afterEach(async () => {
-        await store.cleanup();
-    });
+  beforeEach(async () => {
+    meshClient = MeshClient.getInstance(firebaseConfig);
+    store = await FirebaseMeshStore.getInstance(firebaseConfig, 'test-agent');
+  });
 
-    it('should register an agent', async () => {
-        const agent = {
-            meshId: 'test-mesh',
-            agentId: 'test-agent',
-            role: AgentRole.Worker,
-            status: AgentStatus.Active
-        };
-        const result = await store.registerAgent(agent);
-        expect(result).toEqual({
-            meshId: 'test-mesh',
-            agentId: 'test-agent'
-        });
-    });
+  afterEach(async () => {
+    await store.cleanup();
+  });
+
+  it('should register an agent', async () => {
+    const agent = {
+      meshId: testMeshId,
+      agentId: 'test-agent',
+      role: AgentRole.Worker,
+      status: AgentStatus.Active
+    };
+
+    await store.registerAgent(agent);
+    const agents = await store.getAgents(testMeshId);
+    expect(agents.has(agent.agentId)).toBe(true);
+  });
+
+  it('should get registered agents', async () => {
+    const agent1 = {
+      meshId: testMeshId,
+      agentId: 'agent-1',
+      role: AgentRole.Worker,
+      status: AgentStatus.Active
+    };
+    const agent2 = {
+      meshId: testMeshId,
+      agentId: 'agent-2',
+      role: AgentRole.Worker,
+      status: AgentStatus.Active
+    };
+
+    await store.registerAgent(agent1);
+    await store.registerAgent(agent2);
+
+    const agents = await store.getAgents(testMeshId);
+    expect(agents.size).toBe(2);
+    expect(agents.has(agent1.agentId)).toBe(true);
+    expect(agents.has(agent2.agentId)).toBe(true);
+  });
 }); 
