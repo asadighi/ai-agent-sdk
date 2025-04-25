@@ -1,0 +1,3 @@
+* CLI, Web, and Test packages are responsible for maintaining and loading own .env file and the passing it around to the dependencies; Make sure to continue using the .env of each package separately and avoid the urge of creating new .env file in the root
+
+* Every now and then you will see a firebase permission error; avoid the urge of starting to use firebase admin SDK; keep using the same existing SDKS; the issue is probably in not loading the config correctly or something else

@@ -7,8 +7,8 @@
     "moduleResolution": "bundler",
     "baseUrl": ".",
     "paths": {
-      "@ai-agent/sdk": ["../../packages/sdk/dist"],
-      "@ai-agent/sdk/*": ["../../packages/sdk/dist/*"]
+      "@ai-agent/core-sdk": ["../../packages/core-sdk/src"],
+      "@ai-agent/core-sdk/*": ["../../packages/core-sdk/src/*"]
     },
     "types": ["node"],
     "declaration": true,
@@ -24,6 +24,6 @@
   "include": ["src"],
   "exclude": ["node_modules", "dist"],
   "references": [
-    { "path": "../../packages/sdk" }
+    { "path": "../../packages/core-sdk/tsconfig.json" }
   ]
 } 

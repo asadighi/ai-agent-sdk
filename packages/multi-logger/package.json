@@ -1,0 +1,32 @@
+{
+  "name": "@ai-agent/multi-logger",
+  "version": "0.0.1",
+  "description": "A unified logger for both browser and Node.js environments",
+  "type": "module",
+  "main": "dist/node/index.js",
+  "browser": "dist/web/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "node": "./dist/node/index.js",
+      "browser": "./dist/web/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint src --ext .ts"
+  },
+  "dependencies": {
+    "rimraf": "^5.0.5"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.19",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.3.3"
+  }
+} 

@@ -18,13 +18,14 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
-      "@ai-agent/sdk": ["../../packages/sdk/src"]
+      "@ai-agent/core-sdk": ["../../packages/core-sdk/src"],
+      "@ai-agent/core-sdk/*": ["../../packages/core-sdk/src/*"]
     },
     "types": ["vite/client", "node"]
   },
   "include": ["src"],
   "references": [
-    { "path": "../../packages/sdk" },
+    { "path": "../../packages/core-sdk/tsconfig.json" },
     { "path": "./tsconfig.node.json" }
   ]
 }

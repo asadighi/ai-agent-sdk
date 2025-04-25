@@ -1,100 +1,184 @@
-import { FirestoreClient, AgentRole, Heartbeat } from '@ai-agent/sdk';
 import { Command } from 'commander';
-import dotenv from 'dotenv';
-import { v4 as uuidv4 } from 'uuid';
+import { config } from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
+import { readFileSync } from 'fs';
+import { getMeshClient, IFirebaseConfig, AgentRole, AgentStatus, Heartbeat, Logger, Mesh } from '@ai-agent/core-sdk';
 import { ensureEnvLoaded } from './nodeInit.js';
-import { getFirebaseConfig } from './config.js';
+import { v4 as uuidv4 } from 'uuid';
+import { Agent } from '@ai-agent/core-sdk';
+import { FileStorage } from '@ai-agent/core-sdk';
+import path from 'path';
+import { LogLevel } from '@ai-agent/core-sdk';
 
 // Ensure environment variables are loaded
 ensureEnvLoaded();
-dotenv.config();
 
+// Get the current directory path in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Read package.json
+const packageJsonPath = resolve(__dirname, '../package.json');
+const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
+
+// Get Firebase configuration from environment variables
+const firebaseConfig: IFirebaseConfig = {
+    apiKey: process.env.FIREBASE_API_KEY || '',
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN || '',
+    projectId: process.env.FIREBASE_PROJECT_ID || '',
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET || '',
+    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || '',
+    appId: process.env.FIREBASE_APP_ID || ''
+};
+
+// Log the loaded config (with sensitive data masked)
+console.log('CLI: Environment variables loaded:', {
+  ...firebaseConfig,
+  apiKey: '***'
+});
+
+// Initialize Commander program
 const program = new Command();
 
+// Set program metadata
 program
-  .name('ai-agent')
-  .description('CLI for AI Agent SDK')
-  .version('0.1.0');
+    .name(packageJson.name)
+    .description(packageJson.description);
 
+// Add version option
 program
-  .command('create-mesh')
-  .description('Create a new mesh')
-  .action(async () => {
-    const meshId = uuidv4();
-    const client = FirestoreClient.getInstance(getFirebaseConfig());
-    await client.registerAgent({
-      meshId,
-      agentId: uuidv4(),
-      role: AgentRole.Worker
-    });
-    console.log(`Created new mesh with ID: ${meshId}`);
-  });
-
-program
-  .command('start-agent')
-  .description('Start a new agent in a mesh')
-  .requiredOption('-m, --mesh-id <meshId>', 'Mesh ID')
-  .option('-r, --role <role>', 'Agent role (leader or worker)', 'worker')
-  .action(async (options) => {
-    const { meshId, role } = options;
-    await startAgent(meshId, role === 'leader' ? AgentRole.Leader : AgentRole.Worker);
-  });
-
-/**
- * Start an agent in a mesh with a specific role
- */
-async function startAgent(meshId: string, role: AgentRole) {
-  const agentId = uuidv4();
-  const client = FirestoreClient.getInstance(getFirebaseConfig());
-  
-  try {
-    console.log(`Starting agent ${agentId} in mesh ${meshId} with role ${role}`);
-
-    // Register the agent
-    await client.registerAgent({
-      meshId,
-      agentId,
-      role
-    });
-
-    console.log(`Started agent ${agentId} in mesh ${meshId} with role ${role}`);
-
-    // Subscribe to heartbeats
-    const unsubscribe = client.subscribeToHeartbeats(meshId, (heartbeats: Map<string, Heartbeat>) => {
-      heartbeats.forEach((heartbeat: Heartbeat) => {
-        if (heartbeat.agentId !== agentId) {
-          console.log(`Received heartbeat from ${heartbeat.agentId}`);
+    .option('-v, --version', 'display version number')
+    .action((options) => {
+        if (options.version) {
+            console.log(packageJson.version);
+            process.exit(0);
         }
-      });
     });
 
-    // Keep the process running and handle cleanup
-    process.on('SIGINT', () => {
-      unsubscribe();
-      process.exit();
+// Create mesh command
+program
+    .command('create-mesh')
+    .description('Create a new mesh')
+    .argument('<meshId>', 'The ID of the mesh to create')
+    .action(async (meshId: string) => {
+        try {
+            const client = getMeshClient(firebaseConfig);
+            await client.registerAgent({
+                meshId,
+                agentId: 'manager',
+                role: AgentRole.Manager,
+                status: AgentStatus.Follower
+            });
+            console.log(`Mesh ${meshId} created successfully`);
+        } catch (error) {
+            console.error('Error creating mesh:', error);
+        }
     });
 
-    // Keep the process running
-    setInterval(() => {}, 1000);
-  } catch (error) {
-    console.error('Error starting agent:', error);
-    console.error('Available roles:', Object.values(AgentRole).join(', '));
-    process.exit(1);
-  }
+// Start agent command
+program
+    .command('start')
+    .description('Start an agent in a mesh')
+    .argument('<meshId>', 'The ID of the mesh to join')
+    .argument('<role>', 'The role of the agent (leader or worker)')
+    .action(async (meshId: string, role: string) => {
+        try {
+            const client = getMeshClient(firebaseConfig);
+            const agentRole = role.toLowerCase() === 'manager' ? AgentRole.Manager : AgentRole.Worker;
+            const agentId = `${role}-${Date.now()}`;
+            
+            // Create and start the agent
+            const agent = new Agent({
+                meshId,
+                agentId,
+                role: agentRole,
+                status: AgentStatus.Active,
+                firebaseConfig,
+                heartbeatInterval: 1000,
+                electionInterval: 2000,
+                maxElectionTimeout: 5000
+            });
+
+            // Start the agent
+            await agent.start();
+            console.log(`Agent ${agentId} started in mesh ${meshId} as ${role}`);
+
+            // Subscribe to heartbeats
+            const unsubscribe = client.subscribeToHeartbeats(meshId, (heartbeats: Map<string, Heartbeat>) => {
+                console.log('Heartbeats:', Array.from(heartbeats.entries()));
+            });
+
+            // Handle cleanup on process termination
+            const cleanup = async () => {
+                console.log('Cleaning up...');
+                await agent.stop();
+                unsubscribe();
+                process.exit(0);
+            };
+
+            process.on('SIGINT', cleanup);
+            process.on('SIGTERM', cleanup);
+
+            // Keep the process alive
+            setInterval(() => {}, 1000);
+        } catch (error) {
+            console.error('Error starting agent:', error);
+            process.exit(1);
+        }
+    });
+
+// List meshes command
+program
+    .command('list-meshes')
+    .description('List all meshes')
+    .action(async () => {
+        try {
+            const client = getMeshClient(firebaseConfig);
+            const meshes = await client.getAgentStatuses('*');
+            console.log('Meshes:', Array.from(meshes.keys()));
+        } catch (error) {
+            console.error('Error listing meshes:', error);
+        }
+    });
+
+// Parse command line arguments
+if (process.argv.length > 2) {
+    // If we have arguments, prepend 'start' to make it a valid command
+    process.argv.splice(2, 0, 'start');
+}
+program.parse(process.argv);
+
+const logger = new Logger({
+    logLevel: LogLevel.INFO,
+    logToConsole: true,
+    maxLogs: 1000,
+    rotationInterval: 60000,
+    storage: new FileStorage(path.join(__dirname, 'logs'))
+});
+
+async function main() {
+    try {
+        logger.info('Starting CLI application...');
+        
+        // ... existing code ...
+
+        logger.info('Initializing mesh...');
+        const mesh = new Mesh({
+            meshId: process.env.MESH_ID!,
+            firebaseConfig: firebaseConfig
+        });
+
+        logger.info('Starting mesh...');
+        await mesh.start();
+        logger.info('Mesh started successfully');
+
+        // ... existing code ...
+
+    } catch (error) {
+        logger.error('Error in CLI application:', error);
+        process.exit(1);
+    }
 }
 
-// Handle command line usage
-if (process.argv.length > 2 && !process.argv[2].startsWith('-')) {
-  const meshId = process.argv[2];
-  const role = (process.argv[3] || 'worker') as AgentRole;
-
-  if (!meshId) {
-    console.error('Usage: npm run start:agent <meshId> [role]');
-    console.error('Available roles:', Object.values(AgentRole).join(', '));
-    process.exit(1);
-  }
-
-  startAgent(meshId, role);
-} else {
-  program.parse();
-} 
+main(); 

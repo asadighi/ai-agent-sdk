@@ -1,6 +1,6 @@
 {
-  "name": "ai-agent",
-  "version": "0.1.0",
+  "name": "ai-agent-sdk",
+  "version": "0.0.1",
   "private": true,
   "workspaces": [
     "packages/*",
@@ -8,30 +8,16 @@
   ],
   "scripts": {
     "build": "npm run build --workspaces",
-    "build:web": "npm run build --workspace=@ai-agent/web",
-    "build:cli": "npm run build --workspace=@ai-agent/cli",
-    "build:sdk": "npm run build --workspace=@ai-agent/sdk",
-    "clean": "npm run clean --workspaces",
-    "clean:web": "npm run clean --workspace=@ai-agent/web",
-    "clean:cli": "npm run clean --workspace=@ai-agent/cli",
-    "clean:sdk": "npm run clean --workspace=@ai-agent/sdk",
     "dev": "npm run dev --workspaces",
-    "dev:web": "npm run dev --workspace=@ai-agent/web",
-    "dev:cli": "npm run dev --workspace=@ai-agent/cli",
-    "dev:sdk": "npm run dev --workspace=@ai-agent/sdk",
-    "start": "npm run start --workspaces",
-    "start:cli": "npm run start --workspace=@ai-agent/cli",
-    "start:web": "npm run dev --workspace=@ai-agent/web",
-    "dev:all": "concurrently \"npm run dev:sdk\" \"npm run dev:web\"",
-    "rebuild:all": "npm run clean && npm run build",
-    "rebuild:web": "npm run clean:web && npm run build:web",
-    "rebuild:cli": "npm run clean:cli && npm run build:cli",
-    "rebuild:sdk": "npm run clean:sdk && npm run build:sdk"
-  },
-  "dependencies": {
-    "typescript": "^5.3.3"
+    "test": "npm run test --workspaces",
+    "clean": "npm run clean --workspaces",
+    "lint": "npm run lint --workspaces",
+    "start:web": "cd apps/web && npm run dev"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "turbo": "^1.10.16",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2",
+    "@vitest/coverage-v8": "^1.2.2"
   }
 }

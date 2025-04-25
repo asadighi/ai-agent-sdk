@@ -127,3 +127,8 @@ build/Release
 
 # dataconnect generated files
 .dataconnect
+
+# Log files and directories
+logs/
+*.log
+logs-*.json

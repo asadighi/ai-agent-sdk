@@ -18,6 +18,9 @@ npm run start:cli mesh1 active
 
 # Terminal 4 - Worker 2
 npm run start:cli mesh1 active
+
+# Terminal 4 - Web Leader
+npm run start:web
 ```
 
 Or, if you prefer the web interface, open your browser to `http://localhost:5173` and:

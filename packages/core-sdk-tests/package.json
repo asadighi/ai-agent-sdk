@@ -1,0 +1,22 @@
+{
+  "name": "@ai-agent/core-sdk-tests",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@ai-agent/core-sdk": "workspace:*",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.19",
+    "@vitest/coverage-v8": "^0.34.6",
+    "typescript": "^5.3.3",
+    "vitest": "^0.34.6"
+  }
+} 
