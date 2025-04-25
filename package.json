@@ -16,7 +16,8 @@
     "start:web": "cd apps/web && pnpm run dev",
     "build:multi-logger": "pnpm --filter @ai-agent/multi-logger/types build && pnpm --filter @ai-agent/multi-logger/node build && pnpm --filter @ai-agent/multi-logger/web build && pnpm --filter @ai-agent/multi-logger/ui build",
     "test:multi-logger": "pnpm --filter @ai-agent/multi-logger/types test && pnpm --filter @ai-agent/multi-logger/node test && pnpm --filter @ai-agent/multi-logger/web test && pnpm --filter @ai-agent/multi-logger/ui test",
-    "test:multi-logger:watch": "pnpm --filter @ai-agent/multi-logger/types test:watch && pnpm --filter @ai-agent/multi-logger/node test:watch && pnpm --filter @ai-agent/multi-logger/web test:watch && pnpm --filter @ai-agent/multi-logger/ui test:watch"
+    "test:multi-logger:watch": "pnpm --filter @ai-agent/multi-logger/types test:watch && pnpm --filter @ai-agent/multi-logger/node test:watch && pnpm --filter @ai-agent/multi-logger/web test:watch && pnpm --filter @ai-agent/multi-logger/ui test:watch",
+    "cleanse": "find . -type f \\( -name \"*.js\" -o -name \"*.d.ts\" -o -name \"*.js.map\" -o -name \"*.ts.map\" \\) -path \"*/src/*\" -not -path \"*/node_modules/*\" -delete"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",

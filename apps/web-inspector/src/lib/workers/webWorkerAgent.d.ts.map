@@ -1,1 +1,0 @@
-{"version":3,"file":"webWorkerAgent.d.ts","sourceRoot":"","sources":["webWorkerAgent.ts"],"names":[],"mappings":"AACA,OAAO,KAAK,EAAE,WAAW,EAAE,MAAM,oBAAoB,CAAC;AAEtD,qBAAa,cAAc;IAKb,OAAO,CAAC,MAAM;IAJ1B,OAAO,CAAC,OAAO,CAAS;IACxB,OAAO,CAAC,aAAa,CAAS;IAC9B,OAAO,CAAC,MAAM,CAAa;gBAEP,MAAM,EAAE,WAAW;IAKjC,IAAI;IAgBJ,UAAU;CAoBjB"}
