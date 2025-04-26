@@ -3,7 +3,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "declaration": true,
     "strict": true,
     "esModuleInterop": true,
@@ -16,11 +16,18 @@
     "allowJs": true,
     "isolatedModules": true,
     "preserveSymlinks": true,
-    "types": ["jest"]
+    "types": ["node"],
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": ".",
+    "paths": {
+      "@ai-agent/connectivity-types": ["../types/src"],
+      "@ai-agent/multi-logger-types": ["../../../../packages/multi-logger/packages/types/src"]
+    }
   },
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"],
   "references": [
-    { "path": "./packages/multi-logger" },
-    { "path": "./packages/connectivity" }
+    { "path": "../types" }
   ]
 } 

@@ -1,0 +1,36 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+      "outDir": "dist",
+      "rootDir": "src",
+      "module": "ESNext",
+      "target": "ES2020",
+      "declaration": true,
+      "sourceMap": true,
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "composite": true,
+      "incremental": true,
+      "baseUrl": ".",
+      "paths": {
+        "@ai-agent/multi-logger/types": ["../../../multi-logger/packages/types/src"],
+        "@ai-agent/connectivity/types": ["../types/src"]
+      }
+    },
+    "include": [
+      "src/**/*",
+      "../../../multi-logger/packages/types/src/*.ts"
+    ],
+    "exclude": [
+      "node_modules",
+      "dist",
+      "**/*.test.ts",
+      "../../../multi-logger/packages/types/src/__tests__"
+    ],
+    "references": [
+      { "path": "../types" },
+      { "path": "../../../multi-logger/packages/types" }
+    ]
+} 

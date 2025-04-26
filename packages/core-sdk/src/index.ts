@@ -19,7 +19,6 @@ export * from './firebaseConfig.js';
 
 // Export concrete implementations
 export { Mesh, Leader, Worker, Candidate, Agent, MeshClient };
-export { ConnectionState } from '@ai-agent/common-sdk';
 
 // Create and export a singleton instance of MeshClient
 // Note: The actual Firebase config should be provided by the consuming application

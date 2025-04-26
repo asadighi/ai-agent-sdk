@@ -6,7 +6,8 @@
   "workspaces": [
     "packages/*",
     "packages/types",
-    "packages/firebase"
+    "packages/firebase-infra",
+    "packages/common"
   ],
   "scripts": {
     "build": "pnpm -r build",

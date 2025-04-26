@@ -1,27 +1,30 @@
 {
   "name": "@ai-agent/web-sdk",
   "version": "0.1.0",
-  "type": "module",
+  "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "vitest",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "lint": "eslint src --ext .ts,.tsx",
-    "clean": "rm -rf dist"
+    "clean": "rimraf dist"
   },
   "dependencies": {
     "@ai-agent/core-sdk": "workspace:*",
+    "@ai-agent/multi-logger/types": "workspace:*",
     "d3": "^7.8.5",
     "firebase": "^10.8.0",
     "react": "^18.2.0"
   },
   "devDependencies": {
     "@types/d3": "^7.4.3",
-    "@types/node": "^20.11.0",
+    "@types/node": "^20.0.0",
     "@types/react": "^18.2.48",
-    "typescript": "^5.3.3",
-    "vitest": "^1.2.2"
+    "rimraf": "^5.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
   },
   "peerDependencies": {
     "react": "^18.2.0"

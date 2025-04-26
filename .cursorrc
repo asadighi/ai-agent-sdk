@@ -1,0 +1,46 @@
+{
+  "preferences": {
+    "testing": {
+      "framework": "vitest",
+      "alternatives": {
+        "jest": "Use Vitest instead of Jest. All packages are configured to use Vitest for testing."
+      },
+      "scripts": {
+        "test": "Always use 'vitest run' for the test script to ensure tests run without pausing",
+        "test:watch": "Use 'vitest' for watch mode"
+      },
+      "mocking": {
+        "vitest": "When using vi.fn(), properly type mock functions using ReturnType<typeof vi.fn> for better type safety",
+        "interfaces": "Mock interfaces should extend the original interface with mock function types"
+      }
+    },
+    "packageStructure": {
+      "types": "Each package should have a types subpackage for type definitions",
+      "tests": "Each package should have a tests subpackage for test files",
+      "interfaces": "Keep interfaces in the types package to ensure proper dependency management"
+    },
+    "imports": {
+      "types": "Import types from @ai-agent/{packageName}/types",
+      "tests": "Import test utilities from @ai-agent/{packageName}/tests",
+      "firebase": "Use @firebase/{package} instead of firebase/{package} for better modularity"
+    },
+    "monorepo": {
+      "reference": "For package management and dependency setup, refer to monorepo-package.management.md",
+      "guidelines": "When in doubt about dependencies or package setup, review the monorepo package management documentation",
+      "dependencies": {
+        "types": "Keep types package free of implementation dependencies",
+        "interfaces": "Design interfaces to be implementation-agnostic when possible",
+        "versioning": "Use consistent versioning across related packages"
+      }
+    }
+  },
+  "linting": {
+    "preferredRules": {
+      "testing": {
+        "vitest/prefer-to-be": "error",
+        "vitest/prefer-to-have-length": "error",
+        "vitest/prefer-to-contain": "error"
+      }
+    }
+  }
+} 

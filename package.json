@@ -1,5 +1,5 @@
 {
-  "name": "ai-agent-sdk",
+  "name": "ai-agent",
   "version": "0.1.0",
   "private": true,
   "description": "AI Agent SDK",
@@ -16,12 +16,14 @@
     "lint": "pnpm -r lint",
     "start:web": "cd apps/web && pnpm run dev",
     "build:multi-logger": "pnpm --filter @ai-agent/multi-logger/types build && pnpm --filter @ai-agent/multi-logger/node build && pnpm --filter @ai-agent/multi-logger/web build && pnpm --filter @ai-agent/multi-logger/ui build",
-    "test:multi-logger": "pnpm --filter @ai-agent/multi-logger/types test && pnpm --filter @ai-agent/multi-logger/node test && pnpm --filter @ai-agent/multi-logger/web test && pnpm --filter @ai-agent/multi-logger/ui test",
-    "test:multi-logger:watch": "pnpm --filter @ai-agent/multi-logger/types test:watch && pnpm --filter @ai-agent/multi-logger/node test:watch && pnpm --filter @ai-agent/multi-logger/web test:watch && pnpm --filter @ai-agent/multi-logger/ui test:watch",
-    "build:connectivity": "pnpm --filter @ai-agent/connectivity/types build && pnpm --filter @ai-agent/connectivity/firebase build",
-    "test:connectivity": "pnpm --filter @ai-agent/connectivity/types test && pnpm --filter @ai-agent/connectivity/firebase test",
+    "test:multi-logger": "pnpm --filter @ai-agent/multi-logger/types test && pnpm --filter @ai-agent/multi-logger/node test && pnpm --filter @ai-agent/multi-logger/web test && pnpm --filter @ai-agent/multi-logger/ui test",    
+    "build:types": "pnpm --filter @ai-agent/multi-logger/types build && pnpm --filter @ai-agent/connectivity/types build",
+    "build:connectivity": "pnpm run build:types && pnpm --filter @ai-agent/connectivity/firebase-infra build && pnpm --filter @ai-agent/connectivity/common build",
+    "test:connectivity": "pnpm --filter @ai-agent/connectivity/types test && pnpm --filter @ai-agent/connectivity/firebase-infra test && pnpm --filter @ai-agent/connectivity/common test",
     "cleanse": "find . -type f \\( -name \"*.js\" -o -name \"*.d.ts\" -o -name \"*.js.map\" -o -name \"*.ts.map\" \\) -path \"*/src/*\" -not -path \"*/node_modules/*\" -delete",
-    "create-package": "node scripts/create-package.js"
+    "create-package": "node scripts/create-package.js",
+    "add-dependency": "node scripts/add-dependency.js",
+    "postinstall": "chmod +x scripts/*"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",

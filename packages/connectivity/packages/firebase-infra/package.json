@@ -1,15 +1,20 @@
 {
-  "name": "@ai-agent/connectivity/types",
+  "name": "@ai-agent/connectivity/firebase-infra",
   "version": "0.1.0",
   "private": true,
-  "description": "Connectivity types for AI Agent",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --build",
     "test": "vitest run",
     "test:watch": "vitest",
     "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@ai-agent/connectivity/types": "workspace:*",
+    "@ai-agent/multi-logger/types": "workspace:*",
+    "@firebase/firestore": "^4.0.0",
+    "@firebase/app": "^0.10.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.19",
@@ -17,4 +22,4 @@
     "typescript": "^5.3.3",
     "vitest": "^1.2.2"
   }
-} 
+}

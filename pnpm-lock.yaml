@@ -14,14 +14,20 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^1.2.2
         version: 1.6.1(vitest@1.6.1(@types/node@20.17.31)(jsdom@26.1.0))
+      js-yaml:
+        specifier: ^4.1.0
+        version: 4.1.0
+      rimraf:
+        specifier: ^5.0.0
+        version: 5.0.10
       turbo:
         specifier: ^1.10.16
         version: 1.13.4
       typescript:
-        specifier: ^5.3.3
+        specifier: ^5.0.0
         version: 5.3.3
       vitest:
-        specifier: ^1.2.2
+        specifier: ^1.0.0
         version: 1.6.1(@types/node@20.17.31)(jsdom@26.1.0)
 
   packages/common-sdk:
@@ -48,7 +54,7 @@ importers:
 
   packages/connectivity: {}
 
-  packages/connectivity/packages/firebase:
+  packages/connectivity/packages/common:
     dependencies:
       '@ai-agent/connectivity/types':
         specifier: workspace:*
@@ -56,9 +62,6 @@ importers:
       '@ai-agent/multi-logger/types':
         specifier: workspace:*
         version: link:../../../multi-logger/packages/types
-      firebase:
-        specifier: ^10.8.0
-        version: 10.14.1
     devDependencies:
       '@types/node':
         specifier: ^20.0.0
@@ -73,19 +76,47 @@ importers:
         specifier: ^1.0.0
         version: 1.6.1(@types/node@20.17.31)(jsdom@26.1.0)
 
+  packages/connectivity/packages/firebase-infra:
+    dependencies:
+      '@ai-agent/connectivity/types':
+        specifier: workspace:*
+        version: link:../types
+      '@ai-agent/multi-logger/types':
+        specifier: workspace:*
+        version: link:../../../multi-logger/packages/types
+      '@firebase/app':
+        specifier: ^0.10.0
+        version: 0.10.13
+      '@firebase/firestore':
+        specifier: ^4.0.0
+        version: 4.7.3(@firebase/app@0.10.13)
+    devDependencies:
+      '@types/node':
+        specifier: ^20.11.19
+        version: 20.17.31
+      rimraf:
+        specifier: ^5.0.5
+        version: 5.0.10
+      typescript:
+        specifier: ^5.3.3
+        version: 5.3.3
+      vitest:
+        specifier: ^1.2.2
+        version: 1.6.1(@types/node@20.17.31)(jsdom@26.1.0)
+
   packages/connectivity/packages/types:
     devDependencies:
       '@types/node':
-        specifier: ^20.0.0
+        specifier: ^20.11.19
         version: 20.17.31
       rimraf:
-        specifier: ^5.0.0
+        specifier: ^5.0.5
         version: 5.0.10
       typescript:
-        specifier: ^5.0.0
+        specifier: ^5.3.3
         version: 5.3.3
       vitest:
-        specifier: ^1.0.0
+        specifier: ^1.2.2
         version: 1.6.1(@types/node@20.17.31)(jsdom@26.1.0)
 
   packages/core-sdk:
@@ -293,11 +324,14 @@ importers:
 
   packages/storage-infra-plugin-firebase:
     dependencies:
+      '@ai-agent/core-sdk':
+        specifier: workspace:*
+        version: link:../core-sdk
       '@ai-agent/multi-logger/types':
         specifier: workspace:*
         version: link:../multi-logger/packages/types
       firebase:
-        specifier: ^10.0.0
+        specifier: ^10.8.0
         version: 10.14.1
     devDependencies:
       '@types/node':
@@ -321,6 +355,9 @@ importers:
       '@ai-agent/core-sdk':
         specifier: workspace:*
         version: link:../core-sdk
+      '@ai-agent/multi-logger/types':
+        specifier: workspace:*
+        version: link:../multi-logger/packages/types
       d3:
         specifier: ^7.8.5
         version: 7.9.0
@@ -335,16 +372,19 @@ importers:
         specifier: ^7.4.3
         version: 7.4.3
       '@types/node':
-        specifier: ^20.11.0
+        specifier: ^20.0.0
         version: 20.17.31
       '@types/react':
         specifier: ^18.2.48
         version: 18.3.20
+      rimraf:
+        specifier: ^5.0.0
+        version: 5.0.10
       typescript:
-        specifier: ^5.3.3
+        specifier: ^5.0.0
         version: 5.3.3
       vitest:
-        specifier: ^1.2.2
+        specifier: ^1.0.0
         version: 1.6.1(@types/node@20.17.31)(jsdom@26.1.0)
 
 packages:
