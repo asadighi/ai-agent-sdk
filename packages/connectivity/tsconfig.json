@@ -21,7 +21,6 @@
   "exclude": ["node_modules", "dist"],
   "references": [
     { "path": "./packages/types" },
-    { "path": "./packages/common-sdk" },
     { "path": "./packages/firebase" },
     { "path": "./packages/tests" }
   ]
