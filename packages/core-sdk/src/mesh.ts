@@ -1,4 +1,4 @@
-import { AgentRole, AgentStatus, Heartbeat, ElectionMessage, PresenceStatus, InitialLeaderMessage, getMeshClient, ConnectionState } from './index.js';
+import { AgentRole, AgentStatus, Heartbeat, ElectionMessage, PresenceStatus, InitialLeaderMessage, getMeshClient, ConnectionState } from '@ai-agent/common-sdk';
 import { MeshClient } from './meshClient.js';
 import { IFirebaseConfig } from './firebaseConfig.js';
 import { v4 as uuidv4 } from 'uuid';
@@ -6,8 +6,7 @@ import { Agent } from './agent.js';
 import { Leader } from './leader.js';
 import { Worker } from './worker.js';
 import { Candidate } from './candidate.js';
-import { Logger } from '@ai-agent/multi-logger';
-import { LogLevel } from './types.js';
+import type { ILogger } from '@ai-agent/multi-logger/types';
 import { validateRole, validateAgentConfig, ValidationError } from './validation.js';
 
 export class Mesh {
@@ -22,7 +21,7 @@ export class Mesh {
     private firebaseConfig: IFirebaseConfig;
     private heartbeatCheckInterval: NodeJS.Timeout | null = null;
     private heartbeatInterval: NodeJS.Timeout | null = null;
-    private logger: Logger;
+    private logger: ILogger;
     private isRunning: boolean = false;
     private lastElectionAttempt: number = 0;
     private readonly ELECTION_COOLDOWN = 10000; // 10 seconds cooldown between election attempts
@@ -41,6 +40,7 @@ export class Mesh {
         heartbeatInterval?: number;
         electionInterval?: number;
         maxElectionTimeout?: number;
+        logger: ILogger;
     }) {
         this.meshId = config.meshId;
         this.status = AgentStatus.Follower;
@@ -50,12 +50,7 @@ export class Mesh {
         this.defaultHeartbeatInterval = config.heartbeatInterval || 5000;
         this.defaultElectionInterval = config.electionInterval || 10000;
         this.defaultMaxElectionTimeout = config.maxElectionTimeout || 30000;
-        this.logger = new Logger({
-            logLevel: LogLevel.INFO,
-            logToConsole: true,
-            maxLogs: 1000,
-            rotationInterval: 60000
-        });
+        this.logger = config.logger;
     }
 
     async addAgent(config: {
@@ -74,7 +69,8 @@ export class Mesh {
             firebaseConfig: this.firebaseConfig,
             heartbeatInterval: config.heartbeatInterval,
             electionInterval: config.electionInterval,
-            maxElectionTimeout: config.maxElectionTimeout
+            maxElectionTimeout: config.maxElectionTimeout,
+            logger: this.logger
         });
         await this.client.registerAgent({
             meshId: this.meshId,
@@ -94,7 +90,8 @@ export class Mesh {
             agentId: config.agentId,
             role: AgentRole.Manager,
             status: config.status,
-            firebaseConfig: this.firebaseConfig
+            firebaseConfig: this.firebaseConfig,
+            logger: this.logger
         });
         await this.client.registerAgent({
             meshId: this.meshId,
@@ -128,7 +125,8 @@ export class Mesh {
             agentId: config.agentId,
             role: AgentRole.Worker,
             status: config.status,
-            firebaseConfig: this.firebaseConfig
+            firebaseConfig: this.firebaseConfig,
+            logger: this.logger
         });
         await this.client.registerAgent({
             meshId: this.meshId,
@@ -148,7 +146,8 @@ export class Mesh {
             agentId: config.agentId,
             role: AgentRole.Worker,
             status: AgentStatus.Follower,
-            firebaseConfig: this.firebaseConfig
+            firebaseConfig: this.firebaseConfig,
+            logger: this.logger
         });
         await this.client.registerAgent({
             meshId: this.meshId,
@@ -426,7 +425,8 @@ export class Mesh {
             agentId: this.meshId,
             role: AgentRole.Manager,
             status: AgentStatus.Active,
-            firebaseConfig: this.firebaseConfig
+            firebaseConfig: this.firebaseConfig,
+            logger: this.logger
         });
 
         await this.manager.start();
@@ -598,7 +598,8 @@ export class Mesh {
             agentId: this.meshId,
             role: AgentRole.Worker,
             status: AgentStatus.Active,
-            firebaseConfig: this.firebaseConfig
+            firebaseConfig: this.firebaseConfig,
+            logger: this.logger
         });
         await worker.start();
         this.workers.set(this.meshId, worker);

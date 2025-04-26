@@ -1,0 +1,16 @@
+{
+  "name": "@ai-agent/connectivity",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Connectivity modules for AI Agent",
+  "workspaces": [
+    "packages/*",
+    "packages/types",
+    "packages/firebase"
+  ],
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "clean": "pnpm -r clean"
+  }
+} 

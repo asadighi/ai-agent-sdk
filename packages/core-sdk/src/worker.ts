@@ -1,9 +1,8 @@
 import { AgentRole, AgentStatus, Heartbeat, PresenceStatus, getMeshClient } from './index.js';
 import { v4 as uuidv4 } from 'uuid';
 import { IFirebaseConfig } from './firebaseConfig.js';
-import { Logger } from '@ai-agent/multi-logger';
-import { LogLevel } from './types.js';
-import { serverTimestamp } from 'firebase/firestore';
+import type { ILogger } from '@ai-agent/multi-logger/types';
+
 
 export class Worker {
     private meshId: string;
@@ -14,7 +13,7 @@ export class Worker {
     private client: ReturnType<typeof getMeshClient>;
     private unsubscribe: (() => void) | null = null;
     private heartbeatInterval: NodeJS.Timeout | null = null;
-    private logger: Logger;
+    private logger: ILogger;
 
     constructor(config: {
         meshId: string;
@@ -22,6 +21,7 @@ export class Worker {
         role: AgentRole;
         status: AgentStatus;
         firebaseConfig: IFirebaseConfig;
+        logger: ILogger;
     }) {
         this.meshId = config.meshId;
         this.agentId = config.agentId;
@@ -29,12 +29,7 @@ export class Worker {
         this.status = config.status;
         this.firebaseConfig = config.firebaseConfig;
         this.client = getMeshClient(this.firebaseConfig);
-        this.logger = new Logger({
-            logLevel: LogLevel.INFO,
-            logToConsole: true,
-            maxLogs: 1000,
-            rotationInterval: 60000
-        });
+        this.logger = config.logger;
     }
 
     async start() {

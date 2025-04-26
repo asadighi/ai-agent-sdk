@@ -11,8 +11,10 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
+    "@ai-agent/common-sdk": "workspace:*",
     "@ai-agent/di-container": "workspace:*",
     "@ai-agent/multi-logger/types": "workspace:*",
+    "firebase": "^10.8.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
@@ -25,6 +27,7 @@
     "typescript": "^5.0.0"
   },
   "peerDependencies": {
+    "@ai-agent/common-sdk": "workspace:*",
     "@ai-agent/di-container": "workspace:*",
     "@ai-agent/multi-logger/types": "workspace:*"
   }

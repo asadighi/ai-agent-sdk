@@ -2,8 +2,7 @@ import { AgentAction, Heartbeat, ElectionMessage, RequestVoteMessage, VoteMessag
 import { getMeshClient } from './index.js';
 import { v4 as uuidv4 } from 'uuid';
 import { IFirebaseConfig } from './firebaseConfig.js';
-import { Logger } from '@ai-agent/multi-logger';
-import { LogLevel } from './types.js';
+import type { ILogger } from '@ai-agent/multi-logger/types';
 
 export class Leader {
   private meshId: string;
@@ -28,7 +27,7 @@ export class Leader {
   private unsubscribe: (() => void) | null = null;
   private votesReceived: number = 0;
   private electionTimeout: NodeJS.Timeout | null = null;
-  private logger: Logger;
+  private logger: ILogger;
   private heartbeats: Map<string, Heartbeat> = new Map();
 
   constructor(config: {
@@ -40,6 +39,7 @@ export class Leader {
     heartbeatInterval?: number;
     electionInterval?: number;
     maxElectionTimeout?: number;
+    logger: ILogger;
   }) {
     this.meshId = config.meshId;
     this.agentId = config.agentId;
@@ -50,12 +50,7 @@ export class Leader {
     this.currentTerm = 0;
     this.votedFor = null;
     this.votesReceived = 0;
-    this.logger = new Logger({
-      logLevel: LogLevel.INFO,
-      logToConsole: true,
-      maxLogs: 1000,
-      rotationInterval: 60000
-    });
+    this.logger = config.logger;
     this.setupElectionMessageHandler();
   }
 

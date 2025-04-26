@@ -9,7 +9,7 @@ import { Timestamp } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs';
 import * as path from 'path';
-import { Logger, LogLevel } from '@ai-agent/multi-logger';
+import type { ILogger } from '@ai-agent/multi-logger/types';
 
 class RateLimiter {
     private operations: Map<string, number[]> = new Map();
@@ -145,22 +145,18 @@ export class FirebaseMeshStore implements IMeshStore {
     private agents: Map<string, Map<string, PresenceStatus>> = new Map();
     private rateLimiter: RateLimiter = new RateLimiter(60000, 60);
     private registeredAgents: Set<string> = new Set();
-    private logger: Logger = new Logger({
-        logLevel: LogLevel.INFO,
-        logToConsole: true,
-        maxLogs: 1000,
-        rotationInterval: 60000
-    });
+    private logger: ILogger;
     private isOffline: boolean = false;
     private lastCleanupTime: Map<string, number> = new Map(); // Track last cleanup time per mesh
     private currentAgentId: string = '';
 
-    private constructor(config: IFirebaseConfig, agentId: string) {
+    private constructor(config: IFirebaseConfig, agentId: string, logger: ILogger) {
         if (FirebaseMeshStore.instance) {
             return FirebaseMeshStore.instance;
         }
 
         this.app = initializeApp(config);
+        this.logger = logger;
         
         // Configure Firestore with offline persistence
         const settings: FirestoreSettings = {
@@ -175,9 +171,9 @@ export class FirebaseMeshStore implements IMeshStore {
         FirebaseMeshStore.instance = this;
     }
 
-    public static getInstance(config: IFirebaseConfig, agentId: string): FirebaseMeshStore {
+    public static getInstance(config: IFirebaseConfig, agentId: string, logger: ILogger): FirebaseMeshStore {
         if (!FirebaseMeshStore.instance) {
-            FirebaseMeshStore.instance = new FirebaseMeshStore(config, agentId);
+            FirebaseMeshStore.instance = new FirebaseMeshStore(config, agentId, logger);
         }
         return FirebaseMeshStore.instance;
     }

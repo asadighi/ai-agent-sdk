@@ -1,11 +1,12 @@
 {
   "name": "ai-agent-sdk",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
+  "description": "AI Agent SDK",
   "workspaces": [
     "packages/*",
     "packages/multi-logger/packages/*",
-    "apps/*"
+    "packages/connectivity/packages/*"
   ],
   "scripts": {
     "build": "pnpm -r build",
@@ -17,13 +18,17 @@
     "build:multi-logger": "pnpm --filter @ai-agent/multi-logger/types build && pnpm --filter @ai-agent/multi-logger/node build && pnpm --filter @ai-agent/multi-logger/web build && pnpm --filter @ai-agent/multi-logger/ui build",
     "test:multi-logger": "pnpm --filter @ai-agent/multi-logger/types test && pnpm --filter @ai-agent/multi-logger/node test && pnpm --filter @ai-agent/multi-logger/web test && pnpm --filter @ai-agent/multi-logger/ui test",
     "test:multi-logger:watch": "pnpm --filter @ai-agent/multi-logger/types test:watch && pnpm --filter @ai-agent/multi-logger/node test:watch && pnpm --filter @ai-agent/multi-logger/web test:watch && pnpm --filter @ai-agent/multi-logger/ui test:watch",
-    "cleanse": "find . -type f \\( -name \"*.js\" -o -name \"*.d.ts\" -o -name \"*.js.map\" -o -name \"*.ts.map\" \\) -path \"*/src/*\" -not -path \"*/node_modules/*\" -delete"
+    "build:connectivity": "pnpm --filter @ai-agent/connectivity/types build && pnpm --filter @ai-agent/connectivity/firebase build",
+    "test:connectivity": "pnpm --filter @ai-agent/connectivity/types test && pnpm --filter @ai-agent/connectivity/firebase test",
+    "cleanse": "find . -type f \\( -name \"*.js\" -o -name \"*.d.ts\" -o -name \"*.js.map\" -o -name \"*.ts.map\" \\) -path \"*/src/*\" -not -path \"*/node_modules/*\" -delete",
+    "create-package": "node scripts/create-package.js"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
     "@vitest/coverage-v8": "^1.2.2",
     "turbo": "^1.10.16",
-    "typescript": "^5.3.3",
-    "vitest": "^1.2.2"
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0",
+    "rimraf": "^5.0.0"
   }
 }

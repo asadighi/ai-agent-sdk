@@ -27,7 +27,10 @@ export const Tokens = {
      * Expected type: EventBus
      */
     EventBus: Symbol('EventBus'),
-} as const;
 
-// Re-export types for convenience
-export type { ILogger }; 
+    /**
+     * Connection state token
+     * Expected type: ConnectionState
+     */
+    ConnectionState: Symbol('ConnectionState'),
+} as const;

@@ -1,8 +1,7 @@
 import { AgentRole, AgentStatus, Heartbeat, PresenceStatus, ElectionMessage, RequestVoteMessage, VoteMessage, getMeshClient } from './index.js';
 import { v4 as uuidv4 } from 'uuid';
 import { IFirebaseConfig } from './firebaseConfig.js';
-import { Logger } from '@ai-agent/multi-logger';
-import { LogLevel } from './types.js';
+import type { ILogger } from '@ai-agent/multi-logger/types';
 
 export class Candidate {
     private meshId: string;
@@ -17,7 +16,7 @@ export class Candidate {
     private totalAgents: number = 0;
     private heartbeatTimer?: NodeJS.Timeout;
     private electionTimer?: NodeJS.Timeout;
-    private logger: Logger;
+    private logger: ILogger;
 
     constructor(config: {
         meshId: string;
@@ -25,6 +24,7 @@ export class Candidate {
         role: AgentRole;
         status: AgentStatus;
         firebaseConfig: IFirebaseConfig;
+        logger: ILogger;
     }) {
         this.meshId = config.meshId;
         this.agentId = config.agentId;
@@ -32,12 +32,7 @@ export class Candidate {
         this.status = config.status;
         this.firebaseConfig = config.firebaseConfig;
         this.client = getMeshClient(this.firebaseConfig);
-        this.logger = new Logger({
-            logLevel: LogLevel.INFO,
-            logToConsole: true,
-            maxLogs: 1000,
-            rotationInterval: 60000
-        });
+        this.logger = config.logger;
     }
 
     async start() {
