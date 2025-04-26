@@ -1,2 +1,2 @@
 export * from './FirebaseConnectionStatus';
-export { FirebaseOperations as DatabaseOperations } from './FirebaseOperations'; 
+export { FirebaseOperations as DatabaseOperations } from './FirebaseOperations';

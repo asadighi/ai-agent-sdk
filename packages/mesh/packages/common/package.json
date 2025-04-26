@@ -1,0 +1,23 @@
+{
+  "name": "@ai-agent/mesh/common",
+  "version": "0.1.0",
+  "private": true,
+  "description": "common module for mesh",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@ai-agent/mesh/types": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.19",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2",
+    "rimraf": "^5.0.5"
+  }
+}

@@ -45,16 +45,16 @@ const packageJson = {
     "build": "tsc --build",
     "test": "vitest run",
     "test:watch": "vitest",
-    "clean": "tsc --build --clean"
+    "clean": "rimraf dist"
   },
   dependencies: {
     [`@ai-agent/${packageName}/types`]: "workspace:*"
   },
   devDependencies: {
-    "@types/node": "^20.0.0",
-    "typescript": "^5.0.0",
-    "vitest": "^1.0.0",
-    "rimraf": "^5.0.0"
+    "@types/node": "^20.11.19",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2",
+    "rimraf": "^5.0.5"
   }
 };
 
@@ -96,10 +96,23 @@ fs.writeFileSync(
   JSON.stringify(tsConfig, null, 2)
 );
 
-// Create initial source file
+// Create initial source file and test file
+fs.mkdirSync(path.join(subpackageDir, 'src', '__tests__'), { recursive: true });
+
 fs.writeFileSync(
   path.join(subpackageDir, 'src', 'index.ts'),
   `// Add your ${subpackageName} implementation here\n`
+);
+
+fs.writeFileSync(
+  path.join(subpackageDir, 'src', '__tests__', 'index.test.ts'),
+  `import { describe, it, expect } from 'vitest';
+
+describe('${packageName} ${subpackageName}', () => {
+    it('should have ${subpackageName} implementation defined', () => {
+        expect(true).toBe(true);
+    });
+});\n`
 );
 
 // Update root package's package.json to include the new subpackage in workspaces

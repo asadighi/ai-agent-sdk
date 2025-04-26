@@ -181,6 +181,61 @@ importers:
         specifier: ^1.0.0
         version: 1.6.1(@types/node@20.17.31)(jsdom@26.1.0)
 
+  packages/mesh: {}
+
+  packages/mesh/packages/common:
+    dependencies:
+      '@ai-agent/mesh/types':
+        specifier: workspace:*
+        version: link:../types
+    devDependencies:
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.17.31
+      rimraf:
+        specifier: ^5.0.0
+        version: 5.0.10
+      typescript:
+        specifier: ^5.0.0
+        version: 5.3.3
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@20.17.31)(jsdom@26.1.0)
+
+  packages/mesh/packages/tests:
+    dependencies:
+      '@ai-agent/mesh/types':
+        specifier: workspace:*
+        version: link:../types
+    devDependencies:
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.17.31
+      rimraf:
+        specifier: ^5.0.0
+        version: 5.0.10
+      typescript:
+        specifier: ^5.0.0
+        version: 5.3.3
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@20.17.31)(jsdom@26.1.0)
+
+  packages/mesh/packages/types:
+    devDependencies:
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.17.31
+      rimraf:
+        specifier: ^5.0.0
+        version: 5.0.10
+      typescript:
+        specifier: ^5.0.0
+        version: 5.3.3
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@20.17.31)(jsdom@26.1.0)
+
   packages/multi-logger:
     devDependencies:
       eslint:
@@ -312,34 +367,6 @@ importers:
       jsdom:
         specifier: ^26.1.0
         version: 26.1.0
-      rimraf:
-        specifier: ^5.0.0
-        version: 5.0.10
-      typescript:
-        specifier: ^5.0.0
-        version: 5.3.3
-      vitest:
-        specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.17.31)(jsdom@26.1.0)
-
-  packages/storage-infra-plugin-firebase:
-    dependencies:
-      '@ai-agent/core-sdk':
-        specifier: workspace:*
-        version: link:../core-sdk
-      '@ai-agent/multi-logger/types':
-        specifier: workspace:*
-        version: link:../multi-logger/packages/types
-      firebase:
-        specifier: ^10.8.0
-        version: 10.14.1
-    devDependencies:
-      '@types/node':
-        specifier: ^20.0.0
-        version: 20.17.31
-      eslint:
-        specifier: ^8.0.0
-        version: 8.57.1
       rimraf:
         specifier: ^5.0.0
         version: 5.0.10

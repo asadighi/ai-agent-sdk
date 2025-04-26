@@ -85,15 +85,16 @@ const typesPackageJson = {
   main: "dist/index.js",
   types: "dist/index.d.ts",
   scripts: {
-    "build": "tsc",
-    "test": "vitest",
+    "build": "tsc --build",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "clean": "rimraf dist"
   },
   devDependencies: {
-    "@types/node": "^20.0.0",
-    "typescript": "^5.0.0",
-    "vitest": "^1.0.0",
-    "rimraf": "^5.0.0"
+    "@types/node": "^20.11.19",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2",
+    "rimraf": "^5.0.5"
   }
 };
 
@@ -136,7 +137,7 @@ const testsPackageJson = {
   main: "dist/index.js",
   types: "dist/index.d.ts",
   scripts: {
-    "build": "tsc",
+    "build": "tsc --build",
     "test": "vitest run",
     "test:watch": "vitest",
     "clean": "rimraf dist"
@@ -145,10 +146,10 @@ const testsPackageJson = {
     [`@ai-agent/${packageName}/types`]: "workspace:*"
   },
   devDependencies: {
-    "@types/node": "^20.0.0",
-    "typescript": "^5.0.0",
-    "vitest": "^1.0.0",
-    "rimraf": "^5.0.0"
+    "@types/node": "^20.11.19",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2",
+    "rimraf": "^5.0.5"
   }
 };
 
@@ -183,15 +184,40 @@ fs.writeFileSync(
   JSON.stringify(testsTsConfig, null, 2)
 );
 
-// Create initial source files
+// Create initial source files and test files
+fs.mkdirSync(path.join(packagesDir, 'types', 'src', '__tests__'), { recursive: true });
+fs.mkdirSync(path.join(packagesDir, 'tests', 'src', '__tests__'), { recursive: true });
+
 fs.writeFileSync(
   path.join(packagesDir, 'types', 'src', 'index.ts'),
   '// Add your types here\n'
 );
 
 fs.writeFileSync(
+  path.join(packagesDir, 'types', 'src', '__tests__', 'index.test.ts'),
+  `import { describe, it, expect } from 'vitest';
+
+describe('${packageName} Types', () => {
+    it('should have basic types defined', () => {
+        expect(true).toBe(true);
+    });
+});\n`
+);
+
+fs.writeFileSync(
   path.join(packagesDir, 'tests', 'src', 'index.ts'),
-  '// Add your tests here\n'
+  '// Add your test utilities here\n'
+);
+
+fs.writeFileSync(
+  path.join(packagesDir, 'tests', 'src', '__tests__', 'index.test.ts'),
+  `import { describe, it, expect } from 'vitest';
+
+describe('${packageName} Tests', () => {
+    it('should have test utilities defined', () => {
+        expect(true).toBe(true);
+    });
+});\n`
 );
 
 // Update pnpm-workspace.yaml
