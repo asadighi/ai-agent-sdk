@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const yaml = require('js-yaml');
 
 const packageName = process.argv[2];
 if (!packageName) {
@@ -22,8 +22,8 @@ fs.mkdirSync(path.join(packagesDir, 'tests'), { recursive: true });
 fs.mkdirSync(path.join(packagesDir, 'types', 'src'), { recursive: true });
 fs.mkdirSync(path.join(packagesDir, 'tests', 'src'), { recursive: true });
 
-// Create root package.json
-const rootPackageJson = {
+// Create package's root package.json
+const packageRootPackageJson = {
   name: `@ai-agent/${packageName}`,
   version: "0.1.0",
   private: true,
@@ -42,8 +42,18 @@ const rootPackageJson = {
 
 fs.writeFileSync(
   path.join(packageDir, 'package.json'),
-  JSON.stringify(rootPackageJson, null, 2)
+  JSON.stringify(packageRootPackageJson, null, 2)
 );
+
+// Update root package.json with new scripts
+const rootPackageJsonPath = path.join(rootDir, 'package.json');
+const rootPackageJson = JSON.parse(fs.readFileSync(rootPackageJsonPath, 'utf8'));
+
+// Add new build and test scripts
+rootPackageJson.scripts[`build:${packageName}`] = `pnpm --filter @ai-agent/${packageName}/types build && pnpm --filter @ai-agent/${packageName}/tests build`;
+rootPackageJson.scripts[`test:${packageName}`] = `pnpm --filter @ai-agent/${packageName}/types test && pnpm --filter @ai-agent/${packageName}/tests test`;
+
+fs.writeFileSync(rootPackageJsonPath, JSON.stringify(rootPackageJson, null, 2));
 
 // Create root tsconfig.json
 const rootTsConfig = {
@@ -127,7 +137,8 @@ const testsPackageJson = {
   types: "dist/index.d.ts",
   scripts: {
     "build": "tsc",
-    "test": "vitest",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "clean": "rimraf dist"
   },
   dependencies: {
@@ -184,13 +195,13 @@ fs.writeFileSync(
 );
 
 // Update pnpm-workspace.yaml
-const workspaceYaml = fs.readFileSync(path.join(rootDir, 'pnpm-workspace.yaml'), 'utf8');
-if (!workspaceYaml.includes(`'packages/${packageName}/packages/*'`)) {
-  const updatedYaml = workspaceYaml.replace(
-    /packages:\n(.*?)(?=\n|$)/s,
-    `packages:\n$1  - 'packages/${packageName}/packages/*'\n`
-  );
-  fs.writeFileSync(path.join(rootDir, 'pnpm-workspace.yaml'), updatedYaml);
+const workspaceYamlPath = path.join(rootDir, 'pnpm-workspace.yaml');
+const workspaceYaml = yaml.load(fs.readFileSync(workspaceYamlPath, 'utf8'));
+const newPackagePath = `packages/${packageName}/packages/*`;
+
+if (!workspaceYaml.packages.includes(newPackagePath)) {
+  workspaceYaml.packages.push(newPackagePath);
+  fs.writeFileSync(workspaceYamlPath, yaml.dump(workspaceYaml));
 }
 
 console.log(`Created new package ${packageName} with types and tests subpackages`);
