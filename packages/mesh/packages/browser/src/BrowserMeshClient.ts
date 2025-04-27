@@ -47,6 +47,4 @@ export class BrowserMeshClient extends MeshClient implements IMeshClient {
     async voteForCandidate(candidateId: string, term: number): Promise<void> {
         await super.voteForCandidate(candidateId, term);
     }
-}
-
-export * from './BrowserMeshClient';
+} 

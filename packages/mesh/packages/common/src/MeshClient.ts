@@ -1,4 +1,11 @@
-import { IMeshClient, AgentInfo, ElectionConfig, ElectionState } from "@ai-agent/mesh/types";
+import { 
+    IMeshClient, 
+    MeshStatus, 
+    ElectionConfig, 
+    ElectionState, 
+    AgentInfo,
+    AgentStatus
+} from '@ai-agent/mesh/types';
 import { ILogger } from "@ai-agent/multi-logger/types";
 
 /**
@@ -9,47 +16,92 @@ import { ILogger } from "@ai-agent/multi-logger/types";
  * 
  */
 export class MeshClient implements IMeshClient {
+    private _id: string;
+    private _status: MeshStatus;
+    private _electionConfig: ElectionConfig;
+    private _electionState: ElectionState;
     private agentInfo: AgentInfo | null = null;
-    private electionState: ElectionState = {
-        term: 0,
-        leaderId: null,
-        votedFor: null
-    };
     private connectedAgents: Map<string, AgentInfo> = new Map();
     private agentJoinedCallbacks: ((agent: AgentInfo) => void)[] = [];
     private agentLeftCallbacks: ((agentId: string) => void)[] = [];
     private leaderChangedCallbacks: ((leaderId: string | null) => void)[] = [];
 
-    constructor(private readonly logger: ILogger) {
+    constructor(id: string, protected readonly logger: ILogger) {
         if (!logger) {
             throw new Error("Logger is required");
         }
-        this.logger = logger;
+        this._id = id;
+        this._status = MeshStatus.INACTIVE;
+        this._electionConfig = {
+            electionTimeout: 5000,
+            heartbeatTimeout: 1000,
+            minElectionTimeout: 3000,
+            maxElectionTimeout: 10000
+        };
+        this._electionState = {
+            currentTerm: 0,
+            leaderId: undefined,
+            votedFor: undefined,
+            isCandidate: false,
+            lastHeartbeatTime: new Date(),
+            lastElectionTime: new Date()
+        };
+    }
+
+    get id(): string {
+        return this._id;
+    }
+
+    get status(): MeshStatus {
+        return this._status;
     }
 
     async connect(): Promise<void> {
+        this._status = MeshStatus.ACTIVE;
         this.logger.info("Connecting to mesh network...");
         // TODO: Implement actual connection logic
     }
 
     async disconnect(): Promise<void> {
+        this._status = MeshStatus.INACTIVE;
         this.logger.info("Disconnecting from mesh network...");
         // TODO: Implement actual disconnection logic
     }
 
-    async getAgentInfo(): Promise<AgentInfo> {
-        if (!this.agentInfo) {
-            throw new Error("Agent not connected");
-        }
-        return this.agentInfo;
+    async getAgentInfo(agentId: string): Promise<AgentInfo> {
+        // TODO: Implement actual agent info retrieval
+        return {
+            id: agentId,
+            name: 'Test Agent',
+            status: AgentStatus.ONLINE,
+            capabilities: [],
+            metadata: {}
+        };
     }
 
-    async updateAgentInfo(info: Partial<AgentInfo>): Promise<void> {
-        if (!this.agentInfo) {
-            throw new Error("Agent not connected");
+    async getElectionConfig(): Promise<ElectionConfig> {
+        return this._electionConfig;
+    }
+
+    async getElectionState(): Promise<ElectionState> {
+        return this._electionState;
+    }
+
+    async updateElectionConfig(config: ElectionConfig): Promise<void> {
+        this._electionConfig = config;
+    }
+
+    async startElection(): Promise<void> {
+        this._electionState.isCandidate = true;
+        this._electionState.currentTerm++;
+        this._electionState.lastElectionTime = new Date();
+    }
+
+    async voteForCandidate(candidateId: string, term: number): Promise<void> {
+        if (term > this._electionState.currentTerm) {
+            this._electionState.currentTerm = term;
+            this._electionState.votedFor = candidateId;
         }
-        this.agentInfo = { ...this.agentInfo, ...info };
-        this.logger.info(`Updated agent info: ${JSON.stringify(info)}`);
     }
 
     async getConnectedAgents(): Promise<AgentInfo[]> {
@@ -62,15 +114,6 @@ export class MeshClient implements IMeshClient {
 
     onAgentLeft(callback: (agentId: string) => void): void {
         this.agentLeftCallbacks.push(callback);
-    }
-
-    async startElection(config: ElectionConfig): Promise<void> {
-        this.logger.info(`Starting election with config: ${JSON.stringify(config)}`);
-        // TODO: Implement actual election logic
-    }
-
-    async getElectionState(): Promise<ElectionState> {
-        return this.electionState;
     }
 
     onLeaderChanged(callback: (leaderId: string | null) => void): void {

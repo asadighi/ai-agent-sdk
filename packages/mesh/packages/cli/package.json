@@ -12,7 +12,9 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@ai-agent/mesh/types": "workspace:*"
+    "@ai-agent/mesh/types": "workspace:*",
+    "@ai-agent/mesh/common": "workspace:*",
+    "@ai-agent/multi-logger/types": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.11.19",

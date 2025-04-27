@@ -17,6 +17,12 @@
     "paths": {
       "@ai-agent/mesh/types": [
         "../types/src"
+      ],
+      "@ai-agent/mesh/common": [
+        "../common/src"
+      ],
+      "@ai-agent/multi-logger/types": [
+        "../../../multi-logger/packages/types/src"
       ]
     }
   },
@@ -31,6 +37,12 @@
   "references": [
     {
       "path": "../types"
+    },
+    {
+      "path": "../common"
+    },
+    {
+      "path": "../../../multi-logger/packages/types"
     }
   ]
 }

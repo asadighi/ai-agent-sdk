@@ -12,6 +12,10 @@
       "mocking": {
         "vitest": "When using vi.fn(), properly type mock functions using ReturnType<typeof vi.fn> for better type safety",
         "interfaces": "Mock interfaces should extend the original interface with mock function types"
+      },
+      "imports": {
+        "test": "ALWAYS import { describe, test, expect } from 'vitest' instead of using global test functions",
+        "assertions": "Use Vitest's expect assertions instead of Jest's"
       }
     },
     "packageStructure": {
@@ -30,7 +34,8 @@
       "dependencies": {
         "types": "Keep types package free of implementation dependencies",
         "interfaces": "Design interfaces to be implementation-agnostic when possible",
-        "versioning": "Use consistent versioning across related packages"
+        "versioning": "Use consistent versioning across related packages",
+        "management": "ALWAYS use 'node scripts/add-dependency.js' script to add dependencies between packages. NEVER modify package.json or tsconfig.json directly for adding dependencies."
       }
     }
   },

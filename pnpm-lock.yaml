@@ -160,6 +160,9 @@ importers:
       '@ai-agent/multi-logger':
         specifier: workspace:*
         version: link:../../../multi-logger
+      '@ai-agent/multi-logger/types':
+        specifier: workspace:*
+        version: link:../../../multi-logger/packages/types
     devDependencies:
       '@types/node':
         specifier: ^20.11.19
@@ -176,9 +179,15 @@ importers:
 
   packages/mesh/packages/cli:
     dependencies:
+      '@ai-agent/mesh/common':
+        specifier: workspace:*
+        version: link:../common
       '@ai-agent/mesh/types':
         specifier: workspace:*
         version: link:../types
+      '@ai-agent/multi-logger/types':
+        specifier: workspace:*
+        version: link:../../../multi-logger/packages/types
     devDependencies:
       '@types/node':
         specifier: ^20.11.19
@@ -201,9 +210,9 @@ importers:
       '@ai-agent/mesh/types':
         specifier: workspace:*
         version: link:../types
-      '@ai-agent/multi-logger':
+      '@ai-agent/multi-logger/types':
         specifier: workspace:*
-        version: link:../../../multi-logger
+        version: link:../../../multi-logger/packages/types
     devDependencies:
       '@types/node':
         specifier: ^20.11.19
