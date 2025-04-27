@@ -131,40 +131,77 @@ The Mesh System is a distributed, highly available, and scalable network of agen
 
 ### 2.1 Core Components
 
-#### 2.1.1 Mesh
+#### 2.1.1 Mesh (Core Package)
 - Distributed network of agents
 - Managed by a leader-follower manager system
 - Supports dynamic scaling
 - Maintains topology and health information
+- Provides core agent management and communication
 
-#### 2.1.2 Agents
+#### 2.1.2 Control Plane (Service Package)
+- Separate top-level package for mesh management
+- REST and WebSocket APIs for external access
+- Security and access control
+- Monitoring and observability
+- State management and persistence
+- Agent provisioning and lifecycle management
+
+#### 2.1.3 Agents
 - Two types: Worker and Manager
 - Unique identity and process ID
 - State persistence and recovery
 - Heartbeat mechanism
 - API endpoints for control and communication
 
-#### 2.1.3 Control Panel
-- Separate service for mesh management
-- REST and WebSocket APIs
-- Security and access control
-- Monitoring and observability
-
 ### 2.2 Package Structure
 
 ```
 packages/
-  ├── mesh/
+  ├── mesh/                    # Core mesh functionality
   │   ├── packages/
-  │   │   ├── types/           # Core mesh types and interfaces
-  │   │   ├── control-panel/   # Control panel service
-  │   │   ├── common/          # Shared utilities
-  │   │   ├── browser/         # Browser agent
-  │   │   ├── cli/            # CLI agent
-  │   │   └── tests/          # Test utilities
+  │   │   ├── types/          # Core mesh types and interfaces
+  │   │   ├── common/         # Shared utilities
+  │   │   ├── browser/        # Browser agent
+  │   │   ├── cli/           # CLI agent
+  │   │   └── tests/         # Test utilities
   │   ├── package.json
   │   └── tsconfig.json
+  │
+  └── control-plane/          # Control Plane service
+      ├── packages/
+      │   ├── types/          # Control Plane types
+      │   ├── api-gateway/    # REST and WebSocket servers
+      │   ├── mesh-manager/   # Mesh management
+      │   ├── state-manager/  # State management
+      │   ├── observability/  # Monitoring and metrics
+      │   └── tests/         # Test utilities
+      ├── package.json
+      └── tsconfig.json
 ```
+
+### 2.3 Core Components
+
+#### 2.3.1 Mesh (Core Package)
+- Distributed network of agents
+- Managed by a leader-follower manager system
+- Supports dynamic scaling
+- Maintains topology and health information
+- Provides core agent management and communication
+
+#### 2.3.2 Control Plane (Service Package)
+- Separate top-level package for mesh management
+- REST and WebSocket APIs for external access
+- Security and access control
+- Monitoring and observability
+- State management and persistence
+- Agent provisioning and lifecycle management
+
+#### 2.3.3 Agents
+- Two types: Worker and Manager
+- Unique identity and process ID
+- State persistence and recovery
+- Heartbeat mechanism
+- API endpoints for control and communication
 
 ## 3. Core Interfaces
 
@@ -455,13 +492,20 @@ interface IApiGateway {
 ```mermaid
 graph TD
     subgraph "Mesh System"
-        CP[Control Panel]
         M1[Manager 1 - Leader]
         M2[Manager 2 - Follower]
         M3[Manager 3 - Follower]
         W1[Worker 1]
         W2[Worker 2]
         W3[Worker 3]
+    end
+
+    subgraph "Control Plane"
+        CP[Control Panel]
+        API[API Gateway]
+        MM[Mesh Manager]
+        SM[State Manager]
+        OM[Observability]
     end
 
     subgraph "External Systems"
@@ -477,8 +521,13 @@ graph TD
     M1 -->|Manage| W2
     M1 -->|Manage| W3
     
-    CLI -->|Join| CP
-    BW -->|Join| CP
+    CLI -->|Join| API
+    BW -->|Join| API
+    
+    API --> CP
+    CP --> MM
+    CP --> SM
+    CP --> OM
     
     M1 -->|State| DB
     M2 -->|State| DB
@@ -558,16 +607,15 @@ sequenceDiagram
     L->>A: Acknowledge
 ```
 
-### 0.7.5 Control Panel Architecture
+### 0.7.5 Control Plane Architecture
 
 ```mermaid
 graph TD
-    subgraph "Control Panel"
+    subgraph "Control Plane"
         API[API Gateway]
-        AM[Auth Manager]
         MM[Mesh Manager]
         SM[State Manager]
-        OM[Observability Manager]
+        OM[Observability]
     end
 
     subgraph "External Access"
@@ -580,14 +628,13 @@ graph TD
     BW -->|REST/WS| API
     UI -->|REST/WS| API
     
-    API --> AM
     API --> MM
     API --> SM
     API --> OM
     
-    AM -->|Auth| MM
-    AM -->|Auth| SM
-    AM -->|Auth| OM
+    MM -->|Mesh Types| Mesh
+    SM -->|State Types| Mesh
+    OM -->|Agent Types| Mesh
 ```
 
 ### 0.7.6 Security Flow

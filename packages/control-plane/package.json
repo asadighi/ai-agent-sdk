@@ -1,0 +1,17 @@
+{
+  "name": "@ai-agent/control-plane",
+  "version": "0.1.0",
+  "private": true,
+  "description": "control-plane modules for AI Agent",
+  "workspaces": [
+    "packages/*",
+    "packages/types",
+    "packages/tests",
+    "packages/api-gateway"
+  ],
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "clean": "pnpm -r clean"
+  }
+}

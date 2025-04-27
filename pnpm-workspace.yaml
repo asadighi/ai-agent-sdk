@@ -3,3 +3,4 @@ packages:
   - packages/multi-logger/packages/*
   - packages/connectivity/packages/*
   - packages/mesh/packages/*
+  - packages/control-plane/packages/*

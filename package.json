@@ -25,7 +25,9 @@
     "add-dependency": "node scripts/add-dependency.js",
     "postinstall": "chmod +x scripts/*",
     "build:mesh": "pnpm --filter @ai-agent/mesh/common build && pnpm --filter @ai-agent/mesh/browser build && pnpm --filter @ai-agent/mesh/cli build && pnpm --filter @ai-agent/mesh/tests build",
-    "test:mesh": "pnpm --filter @ai-agent/mesh/types test && pnpm --filter @ai-agent/mesh/tests test"
+    "test:mesh": "pnpm --filter @ai-agent/mesh/types test && pnpm --filter @ai-agent/mesh/tests test",
+    "build:control-plane": "pnpm --filter @ai-agent/control-plane/types build && pnpm --filter @ai-agent/control-plane/api-gateway build && pnpm --filter @ai-agent/control-plane/tests build",
+    "test:control-plane": "pnpm --filter @ai-agent/control-plane/types test && pnpm --filter @ai-agent/control-plane/api-gateway test && pnpm --filter @ai-agent/control-plane/tests test"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
