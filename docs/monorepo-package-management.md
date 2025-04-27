@@ -59,10 +59,16 @@ This will create:
 
 ### Adding Dependencies Between Subpackages
 
-To add a dependency between subpackages within the monorepo:
+To add a dependency between subpackages within the monorepo, you can use either:
 
+1. The pnpm command (recommended):
 ```bash
 pnpm add-dependency <source-package> -> <target-package>
+```
+
+2. The script directly (if pnpm command fails):
+```bash
+node scripts/add-dependency.js "<source-package> -> <target-package>"
 ```
 
 For example:

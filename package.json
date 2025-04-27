@@ -9,7 +9,7 @@
     "packages/connectivity/packages/*"
   ],
   "scripts": {
-    "build": "pnpm -r build",
+    "build": "pnpm build:types && pnpm build:multi-logger && pnpm build:connectivity && pnpm build:mesh",
     "dev": "pnpm -r dev",
     "test": "pnpm -r test",
     "clean": "pnpm -r clean",
@@ -17,14 +17,14 @@
     "start:web": "cd apps/web && pnpm run dev",
     "build:multi-logger": "pnpm --filter @ai-agent/multi-logger/types build && pnpm --filter @ai-agent/multi-logger/node build && pnpm --filter @ai-agent/multi-logger/web build && pnpm --filter @ai-agent/multi-logger/ui build",
     "test:multi-logger": "pnpm --filter @ai-agent/multi-logger/types test && pnpm --filter @ai-agent/multi-logger/node test && pnpm --filter @ai-agent/multi-logger/web test && pnpm --filter @ai-agent/multi-logger/ui test",
-    "build:types": "pnpm --filter @ai-agent/multi-logger/types build && pnpm --filter @ai-agent/connectivity/types build",
-    "build:connectivity": "pnpm run build:types && pnpm --filter @ai-agent/connectivity/firebase-infra build && pnpm --filter @ai-agent/connectivity/common build",
+    "build:types": "pnpm --filter @ai-agent/multi-logger/types build && pnpm --filter @ai-agent/connectivity/types build && pnpm --filter @ai-agent/mesh/types build",
+    "build:connectivity": "pnpm --filter @ai-agent/connectivity/firebase-infra build && pnpm --filter @ai-agent/connectivity/common build",
     "test:connectivity": "pnpm --filter @ai-agent/connectivity/types test && pnpm --filter @ai-agent/connectivity/firebase-infra test && pnpm --filter @ai-agent/connectivity/common test",
     "cleanse": "find . -type f \\( -name \"*.js\" -o -name \"*.d.ts\" -o -name \"*.js.map\" -o -name \"*.ts.map\" \\) -path \"*/src/*\" -not -path \"*/node_modules/*\" -delete",
     "create-package": "node scripts/create-package.js",
     "add-dependency": "node scripts/add-dependency.js",
     "postinstall": "chmod +x scripts/*",
-    "build:mesh": "pnpm --filter @ai-agent/mesh/types build && pnpm --filter @ai-agent/mesh/tests build",
+    "build:mesh": "pnpm --filter @ai-agent/mesh/common build && pnpm --filter @ai-agent/mesh/browser build && pnpm --filter @ai-agent/mesh/cli build && pnpm --filter @ai-agent/mesh/tests build",
     "test:mesh": "pnpm --filter @ai-agent/mesh/types test && pnpm --filter @ai-agent/mesh/tests test"
   },
   "devDependencies": {

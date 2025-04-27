@@ -1,8 +1,8 @@
 {
-  "name": "@ai-agent/mesh/common",
+  "name": "@ai-agent/mesh/cli",
   "version": "0.1.0",
   "private": true,
-  "description": "common module for mesh",
+  "description": "cli module for mesh",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -12,9 +12,7 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@ai-agent/mesh/types": "workspace:*",
-    "@ai-agent/connectivity": "workspace:*",
-    "@ai-agent/multi-logger/types": "workspace:*"
+    "@ai-agent/mesh/types": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.11.19",
