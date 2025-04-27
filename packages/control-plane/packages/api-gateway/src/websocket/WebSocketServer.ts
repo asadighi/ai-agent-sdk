@@ -54,7 +54,7 @@ export class WebSocketServer {
                     console.log('[WS] Sending timeout error message');
                     ws.send(JSON.stringify({ error: 'Message processing timeout' }));
                 }
-            }, 100); // Increased timeout to 100ms
+            }, 5000); // Increased timeout to 5 seconds
 
             // Handle the message
             console.log('[WS] Calling message handler');
@@ -94,7 +94,7 @@ export class WebSocketServer {
                 if (ws.readyState === WebSocket.OPEN) {
                     ws.close(1000, 'Connection timeout');
                 }
-            }, 100);
+            }, 30000); // Increased timeout to 30 seconds
 
             // Apply global middleware
             for (const middleware of this.globalMiddleware) {
@@ -104,11 +104,6 @@ export class WebSocketServer {
             // Get the handler for this path
             const path = req.url || '/';
             const handler = this.routes.get(path) || null;
-
-            // Call the handler directly if one exists
-            if (handler) {
-                await handler(ws, req);
-            }
 
             // Handle messages
             ws.on('message', (data: string) => this.handleMessage(ws, data, handler));
@@ -158,17 +153,8 @@ export class WebSocketServer {
                 console.log(`[WS] Starting server on port ${port}`);
 
                 // Create the WebSocket server
-                this.wss = new WSServer({ noServer: true });
+                this.wss = new WSServer({ server: this.server });
                 
-                // Handle upgrade requests
-                this.server.on('upgrade', (request, socket, head) => {
-                    if (request.url?.startsWith('/ws')) {
-                        this.wss?.handleUpgrade(request, socket, head, (ws) => {
-                            this.wss?.emit('connection', ws, request);
-                        });
-                    }
-                });
-
                 // Handle WebSocket connections
                 this.wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
                     console.log('[WS] New connection request:', req.url);
@@ -198,7 +184,7 @@ export class WebSocketServer {
                 });
 
             } catch (error) {
-                this.config.logger.error('Error starting server:', error);
+                this.config.logger.error('Failed to start server:', error);
                 reject(error);
             }
         });

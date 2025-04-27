@@ -2,11 +2,13 @@
   "name": "@ai-agent/control-plane/api-gateway",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "description": "api-gateway module for control-plane",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc --build",
+    "dev": "tsx src/server.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
@@ -27,7 +29,8 @@
     "express": "^5.1.0",
     "express-rate-limit": "^7.5.0",
     "jsonwebtoken": "^9.0.2",
-    "ws": "^8.18.1"
+    "ws": "^8.18.1",
+    "@ai-agent/multi-logger/node": "workspace:*"
   },
   "devDependencies": {
     "@types/axios": "^0.14.4",
@@ -37,6 +40,8 @@
     "eslint": "^8.57.0",
     "prettier": "^3.2.5",
     "rimraf": "^5.0.5",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.7.1",
     "typescript": "^5.3.3",
     "vitest": "^1.6.1"
   }

@@ -23,6 +23,9 @@
       ],
       "@ai-agent/multi-logger/types": [
         "../../../multi-logger/packages/types/src"
+      ],
+      "@ai-agent/multi-logger/node": [
+        "../../../multi-logger/packages/node/src"
       ]
     }
   },
@@ -43,6 +46,9 @@
     },
     {
       "path": "../../../multi-logger/packages/types"
+    },
+    {
+      "path": "../../../multi-logger/packages/node"
     }
   ]
 }
